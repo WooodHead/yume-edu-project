@@ -1,0 +1,30 @@
+/* @import '~antd/dist/antd.css'; */
+
+.layout{
+  height: 100vh;
+  /* width:fit-content; */
+  padding: 24px;
+}
+.login {
+  width: 100%;
+  margin: auto;
+
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.logout {
+  width: 20%;
+  height: 100%;
+  margin: auto;
+
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+.xrequired:before {
+  content: '* ';
+  color: red;
+}
