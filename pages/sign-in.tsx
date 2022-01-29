@@ -6,9 +6,11 @@ import { Layout, Input, Button, Checkbox, Form, Radio } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import { Typography } from "antd";
+import styled from "styled-components"
 
 const { Title } = Typography;
 const { Content } = Layout;
+
 
 export default function SignIn() {
   const onFinish = (values: any) => {
@@ -26,7 +28,7 @@ export default function SignIn() {
         >
           <Form.Item>
             <Radio.Group>
-              <Radio.Button value="student" checked>Student</Radio.Button>
+              <Radio.Button value="student">Student</Radio.Button>
               <Radio.Button value="teacher">Teacher</Radio.Button>
               <Radio.Button value="manager">Manager</Radio.Button>
             </Radio.Group>
