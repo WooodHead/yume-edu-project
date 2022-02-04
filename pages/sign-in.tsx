@@ -6,7 +6,8 @@ import { Layout, Input, Button, Checkbox, Form, Radio } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import { Typography } from "antd";
-import styled from "styled-components"
+
+// import styled from "styled-components"
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -19,7 +20,8 @@ export default function SignIn() {
   return (
     <Layout className={signStyle.layout}>
       <Content className={signStyle.login}>
-        <Title level={1}>Course Management Assistant</Title>
+        
+        <Title level={1} >Course Management Assistant</Title>
         <Form
           name="normal_login"
           className="login-form"
@@ -62,18 +64,21 @@ export default function SignIn() {
           </Form.Item>
 
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-form-button"
-              style={{ display: "block", width: "100%", padding: "4px 15px" }}
-            >
-              Sign in
-            </Button>
+    
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="login-form-button"
+                style={{ display: "block", width: "100%", padding: "4px 15px" }}
+              >
+                Sign in
+              </Button>
+            
+            
           </Form.Item>
           <Form.Item>
             No account?
-            <Link href="/sign-up">
+            <Link href="/sign-in">
               <a> Sign up </a>
             </Link>
           </Form.Item>

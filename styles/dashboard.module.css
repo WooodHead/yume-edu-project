@@ -1,0 +1,10 @@
+.site-layout-background {
+  padding: 0;
+  height: "80px";
+  width: "100%";
+  display: "flex";
+  align-items: "center";
+}
+.trigger:hover {
+    color: #1890ff;
+  }
