@@ -5,6 +5,9 @@ import Link from 'next/link'
 
 
 const Home: NextPage = () => {
+  const style = {
+    display: 'flex', justifyContent:'space-between', height:"20vh", margin:"30px"
+  }
   return (
     <div style={{height: '100%'}}>
       <Head>
@@ -13,7 +16,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header style={{display: 'flex', justifyContent:'space-between', height:"20vh", margin:"30px"}}>
+      <header style={style}>
         <div>Navigation</div>
         <Link href="/sign-in">
           <a style={{color:"red"}}>Sign In</a>
