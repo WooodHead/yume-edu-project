@@ -1,23 +1,28 @@
 import React from "react";
 import Link from "next/link";
 import "antd/dist/antd.css";
-import styled from "styled-components";
-import { Menu, Layout } from "antd";
+// import styled from "styled-components";
+import { Menu, Layout, Popover, Button } from "antd";
 import Image from "next/image";
 import logo from "../../public/logo.png";
-import user from "../../public/user.png";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
   MailOutlined,
   BellOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import OverviewContent from "../../components/content";
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
-
+const content = (
+  <div style={{cursor: "pointer"}}>
+    <LogoutOutlined style={{ margin: "0 5px" }} />
+    <span>Logout</span>
+  </div>
+);
 
 export default class LeftNav extends React.Component {
   state = {
@@ -30,14 +35,15 @@ export default class LeftNav extends React.Component {
     });
   };
 
-   styledSth = styled.div`
-   eight: "80px",
-   display: "flex",
-   alignItems: "center",
-   justifyContent: "center"
-  `
+  //  styledSth = styled.div`
+  //  eight: "80px",
+  //  display: "flex",
+  //  alignItems: "center",
+  //  justifyContent: "center"
+  // `
 
   render() {
+    
     return (
       <>
         <Layout style={{ height: "100%" }}>
@@ -126,7 +132,9 @@ export default class LeftNav extends React.Component {
                   }}
                 />
 
-                <Image src={user} alt="avatar" width="30" height="30" />
+                <Popover content={content} trigger="hover">
+                  <Button icon={<UserOutlined />} shape="circle"></Button>
+                </Popover>
               </div>
             </Header>
 
