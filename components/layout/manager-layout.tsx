@@ -76,6 +76,7 @@ export default function ManagerLayout({ children }: any) {
             onClick = {handleClick}
             selectedKeys={[currentMenuItem]}
             // 
+            defaultSelectedKeys={['/manager']}
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0" }}
           >
@@ -102,7 +103,7 @@ export default function ManagerLayout({ children }: any) {
               </Link>
             </Menu.Item>
 
-            <SubMenu icon={<MailOutlined />} title="Student">
+            <SubMenu key="sub1" icon={<MailOutlined />} title="Student">
               <Menu.Item key="manager/students">
                 <Link href="/dashboard/manager/students">
                   <a>Student List</a>
@@ -110,7 +111,7 @@ export default function ManagerLayout({ children }: any) {
               </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="sub1" icon={<MailOutlined />} title="Teacher">
+            <SubMenu key="sub2" icon={<MailOutlined />} title="Teacher">
               <Menu.Item key="/manager/teacher">
                 <Link href="/dashboard/manager/teacher">
                   <a>Teacher List</a>
@@ -118,7 +119,7 @@ export default function ManagerLayout({ children }: any) {
               </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="sub2" icon={<MailOutlined />} title="Course">
+            <SubMenu key="sub3" icon={<MailOutlined />} title="Course">
               <Menu.Item key="/manager/courses">
                 <Link href="/dashboard/manager/courses">
                   <a>All Courses</a>
