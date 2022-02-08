@@ -57,50 +57,42 @@ const columns = [
 
 export default function StudentList() {
   const [studentsData, setStudentsDate] = useState([]);
+  // get students data
 
-  // const getStudent = () => {
-  //   axios
-  //     .get(
-  //       "https://img.showdoc.cc/2020-12-30_5feb8a2decd92.json?e=1644328509&token=-YdeH6WvESHZKz-yUzWjO-uVV6A7oVrCN3UXi48F:bciDaN_4nMLY5HM3IFCp4aWKeb8="
-  //     )
-  //     .then(function (response) {
-  //       // console.log(response.data[0].name);
-  //       setStudentsDate(response.data);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // };
-  useEffect(()=>{
+  useEffect(() => {
+    const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
     axios
-      .get(
-        "https://img.showdoc.cc/2020-12-30_5feb8a2decd92.json?e=1644328509&token=-YdeH6WvESHZKz-yUzWjO-uVV6A7oVrCN3UXi48F:bciDaN_4nMLY5HM3IFCp4aWKeb8="
-      )
+      .get("http://cms.chtoma.com/api/students?page=1&limit=20", {
+        headers: { Authorization: `Bearer ${userToken}` },
+      })
       .then(function (response) {
-        // console.log(response.data[0].name);
-        setStudentsDate(response.data);
+        // console.log(response.data.data.students);
+        const studentProfile = response.data.data.students
+        setStudentsDate(studentProfile);
       })
       .catch(function (error) {
         console.log(error);
       });
-  })
+  },[]);
 
   return (
     <ManagerLayout>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Search
-          placeholder="input search text"
-          enterButton="Search"
-          size="middle"
-          style={{ width: "30%" }}
-        />
-        <Button>
-          <PlusOutlined />
-          Add
-        </Button>
-      </div>
+      <div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Search
+            placeholder="input search text"
+            enterButton="Search"
+            size="middle"
+            style={{ width: "30%" }}
+          />
+          <Button>
+            <PlusOutlined />
+            Add
+          </Button>
+        </div>
 
-      <Table columns={columns} dataSource={studentsData} rowKey="id" />
+        <Table columns={columns} dataSource={studentsData} rowKey="id" />
+      </div>
     </ManagerLayout>
   );
 }
