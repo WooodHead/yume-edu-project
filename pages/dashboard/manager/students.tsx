@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import axios from "axios";
 import ManagerLayout from "../../../components/layout/manager-layout";
-import { Table, Button, Input, Space } from "antd";
+import { Table, Button, Input, Space, Pagination } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-
-
-const { Search } = Input;
 
 const columns = [
   {
     // ？排序
     title: "No.",
-    dataIndex: "id",
+    
     key: "id",
+    render (_: unknown, _2: unknown, index: number) {
+      return index + 1;
+    },
   },
   {
     title: "Name",
@@ -35,11 +35,15 @@ const columns = [
     title: "Selected Curriculum",
     dataIndex: "courses.name",
     key: "courses",
+    // render:
   },
   {
-    title: "Student Type",
-    dataIndex: "",
     key: "type",
+    title: "Student Type",
+    dataIndex: "type[1].name",
+    // render: (tester: string) => {
+    //   return <p>{tester ? "tester" : "developer"}</p>;
+    // },
   },
   {
     // ？时间
@@ -60,35 +64,57 @@ const columns = [
 ];
 
 export default function StudentList() {
+  const [loading, setLoading] = useState(false);
   const [studentProfile, setStudentProfile] = useState([]);
+  const [inputTerm, setInputTerm] = useState("");
 
   // get students data
   useEffect(() => {
+    setLoading(true);
+
     const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
     axios
       .get("http://cms.chtoma.com/api/students?page=1&limit=20", {
         headers: { Authorization: `Bearer ${userToken}` },
       })
-      .then(function (response) {       
-        // console.log(response.data.data.students[0]);
+      .then(function (response) {
+        // console.log(response.data.data.students);
 
-        const studentProfile = response.data.data.students
-        if(studentProfile){
+        const studentProfile = response.data.data.students;
+        if (studentProfile) {
           setStudentProfile(studentProfile);
-        }       
+        }
       })
       .catch(function (error) {
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-  },[]);
+  }, []);
+
+  // search filter bar
+  useEffect(() => {
+    if (inputTerm !== "") {
+      console.log(inputTerm);
+
+      const newProfile = studentProfile.filter((profile) => {
+        if (profile.name.toLowerCase().includes(inputTerm.toLowerCase())) {
+          console.log(profile);
+          return profile;
+        }
+      });
+      setStudentProfile(newProfile);
+    }
+  }, [inputTerm]);
 
   return (
     <ManagerLayout>
       <div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Search
+          <Input
             placeholder="input search text"
-            enterButton="Search"
+            onChange={(e) => setInputTerm(e.target.value)}
             size="middle"
             style={{ width: "30%" }}
           />
@@ -98,7 +124,14 @@ export default function StudentList() {
           </Button>
         </div>
 
-        <Table columns={columns} dataSource={studentProfile} rowKey="id" />
+        <Table
+          columns={columns}
+          dataSource={studentProfile}
+          loading={loading}
+          pagination={{
+            pageSize: 5,
+          }}
+        />
       </div>
     </ManagerLayout>
   );
