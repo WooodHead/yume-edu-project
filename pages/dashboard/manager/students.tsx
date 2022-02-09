@@ -5,13 +5,15 @@ import ManagerLayout from "../../../components/layout/manager-layout";
 import { Table, Button, Input, Space } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
+
 const { Search } = Input;
 
 const columns = [
   {
+    // ？排序
     title: "No.",
-    dataIndex: "index",
-    key: "index",
+    dataIndex: "id",
+    key: "id",
   },
   {
     title: "Name",
@@ -29,19 +31,21 @@ const columns = [
     key: "email",
   },
   {
+    // ？如何获取course.name
     title: "Selected Curriculum",
-    dataIndex: "studentCourseIds",
-    key: "",
+    dataIndex: "courses.name",
+    key: "courses",
   },
   {
     title: "Student Type",
-    dataIndex: "typeId",
-    key: "",
+    dataIndex: "",
+    key: "type",
   },
   {
+    // ？时间
     title: "Join Time",
-    dataIndex: "ctime",
-    key: "",
+    dataIndex: "createAt",
+    key: "createAt",
   },
   {
     title: "Action",
@@ -56,19 +60,22 @@ const columns = [
 ];
 
 export default function StudentList() {
-  const [studentsData, setStudentsDate] = useState([]);
-  // get students data
+  const [studentProfile, setStudentProfile] = useState([]);
 
+  // get students data
   useEffect(() => {
     const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
     axios
       .get("http://cms.chtoma.com/api/students?page=1&limit=20", {
         headers: { Authorization: `Bearer ${userToken}` },
       })
-      .then(function (response) {
-        // console.log(response.data.data.students);
+      .then(function (response) {       
+        // console.log(response.data.data.students[0]);
+
         const studentProfile = response.data.data.students
-        setStudentsDate(studentProfile);
+        if(studentProfile){
+          setStudentProfile(studentProfile);
+        }       
       })
       .catch(function (error) {
         console.log(error);
@@ -91,7 +98,7 @@ export default function StudentList() {
           </Button>
         </div>
 
-        <Table columns={columns} dataSource={studentsData} rowKey="id" />
+        <Table columns={columns} dataSource={studentProfile} rowKey="id" />
       </div>
     </ManagerLayout>
   );
