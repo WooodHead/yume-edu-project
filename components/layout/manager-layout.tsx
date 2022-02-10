@@ -30,7 +30,7 @@ export default function ManagerLayout({ children }: any) {
         {},
         { headers: { Authorization: `Bearer ${userToken}` } }
       )
-      .then(function (response) {
+      .then( () => {
         localStorage.removeItem("cms");
         router.push("/sign-in");
       })
@@ -45,13 +45,13 @@ export default function ManagerLayout({ children }: any) {
   };
 
   // handle current menu item  ？？？有问题
-  const [currentMenuItem, setCurrentMenuItem] = useState('/manager'); 
-  const handleClick = (e:any) => {
-    console.log('click ', e);
-    setCurrentMenuItem(
-      e.key
-    )
-  }
+  // const [currentMenuItem, setCurrentMenuItem] = useState('/manager'); 
+  // const handleClick = (e:any) => {
+  //   console.log('click ', e);
+  //   setCurrentMenuItem(
+  //     e.key
+  //   )
+  // }
 
   return (
     <div >
@@ -74,10 +74,11 @@ export default function ManagerLayout({ children }: any) {
             theme="dark"
             mode="inline"
             // 有问题
-            onClick = {handleClick}
-            selectedKeys={[currentMenuItem]}
+            // onClick = {handleClick}
+            // selectedKeys={[currentMenuItem]}
             // 
-            defaultSelectedKeys={['/manager']}
+            defaultSelectedKeys={['/manager/students']}
+            defaultOpenKeys={['sub1']}
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0"}}
           >
@@ -105,7 +106,7 @@ export default function ManagerLayout({ children }: any) {
             </Menu.Item>
 
             <SubMenu key="sub1" icon={<MailOutlined />} title="Student">
-              <Menu.Item key="manager/students">
+              <Menu.Item key="/manager/students">
                 <Link href="/dashboard/manager/students">
                   <a>Student List</a>
                 </Link>
@@ -197,7 +198,7 @@ export default function ManagerLayout({ children }: any) {
               backgroundColor: 'white', 
             }}
           >
-            <h1>CMS MANAGEMENT SYSTEM {currentMenuItem}</h1>
+            {/* <h1>CMS MANAGEMENT SYSTEM{currentMenuItem}</h1> */}
             {children}
           </Content>
         </Layout>
