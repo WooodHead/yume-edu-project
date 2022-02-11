@@ -43,19 +43,21 @@ export default function StudentList() {
     {
       key: "type",
       title: "Student Type",
-      render: (text: unknown, obj: unknown, index: unknown) => {
-        return <p>{obj.type.name}</p>;
-      },
+
+      // Typescript 类型问题
+      // render: (_: unknown, obj: string | number | unknown, _1: unknown) => {
+      //   return <p>{obj.type.name}</p>;
+      // },
     },
 
     {
       // 引入了一个data-fns api
       title: "Join Time",
-      dataIndex: "createdAt",
       key: "createdAt",
-      render: (date: number) => {
-        var result = formatDistanceToNow(new Date(date));
+      render: (obj:any) => {
+        const result = formatDistanceToNow(new Date(obj.createdAt));
         return <p>{result}</p>;
+        
       },
     },
     {
@@ -81,18 +83,16 @@ export default function StudentList() {
   ];
 
   const [loading, setLoading] = useState(false); // loading effect
-
-  const [studentProfile, setStudentProfile] = useState<Record<string, any>>([]); // store student data
+  const [studentProfile, setStudentProfile] = useState<Record<string, any>[]>([]); // store student data
   const [searchValue, setSearchValue] = useState(""); // store the value of input when searching
   const [total, setTotal] = useState(); // store the total number of student data in server
-
   // pagination # 每次点击分页都需要重新向后台请求数据
   // page pageSize ---> 写成 object ? 
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
-
   const [deletedItem, setDeletedItem] = useState("");
 
+ 
   // get and show students list
   useEffect(() => {
     setLoading(true);
@@ -123,6 +123,14 @@ export default function StudentList() {
     // # 每次点击分页都需要重新向后台请求数据 ( page等改变，重新渲染一次 )
   }, [page, pageSize, searchValue, deletedItem]);
 
+
+    // Search student
+    const filteredData = useMemo(
+      () => studentProfile.filter((item) => !searchValue || (item.name).toLowerCase().includes(searchValue.toLowerCase())), 
+      [searchValue, studentProfile])
+  
+      
+      
   // handle delete student action
   const confirm = (obj: any) => {
     const id: string = obj.id;
@@ -144,15 +152,8 @@ export default function StudentList() {
       });
   };
 
-  // Search student
-  const filteredData = useMemo(() => {
-    return studentProfile.filter((item: { name: string }) => {
-      if (searchValue === "") {
-        return true;
-      }
-      return item.name.toLowerCase().includes(searchValue.toLowerCase());
-    });
-  }, [searchValue, studentProfile]);
+ 
+
 
   return (
     <ManagerLayout>
@@ -160,6 +161,8 @@ export default function StudentList() {
       <h1>CMS MANAGEMENT SYSTEM / Manager / Student List</h1>
       <div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
+          
+          {/* Search by student name */}
           <Input
             placeholder="input search text"
             size="middle"
