@@ -1,0 +1,4 @@
+# add-student 
+  在 add-student.tsx 中新增的数据怎么实在实时更新数据
+# 特别严重的一个问题
+  search功能

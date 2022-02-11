@@ -2,13 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import "antd/dist/antd.css";
 import axios from "axios";
 import ManagerLayout from "../../../components/manager/manager-layout";
-import { Table, Input, Space, Popconfirm, message } from "antd";
+import { Table, Input, Space, Popconfirm, message, Pagination } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import AddStudent from "../../../components/manager/add-student";
 import EditStudent from "../../../components/manager/edit-students";
 
 export default function StudentList() {
- 
   const columns = [
     {
       title: "No.",
@@ -35,8 +34,8 @@ export default function StudentList() {
     {
       title: "Selected Curriculum",
       key: "courses",
-      render: (courseItem) => {
-        return courseItem.courses.map((item: { name: string }) => {
+      render: (_: unknown, obj: any, _1: unknown) => {
+        return obj.courses.map((item: { name: string }) => {
           return <span key="item.courseId">{item.name}</span>;
         });
       },
@@ -44,8 +43,8 @@ export default function StudentList() {
     {
       key: "type",
       title: "Student Type",
-      render: (data) => {
-        return <p>{data.type.name}</p>;
+      render: (text: unknown, obj: unknown, index: unknown) => {
+        return <p>{obj.type.name}</p>;
       },
     },
 
@@ -64,16 +63,12 @@ export default function StudentList() {
       key: "action",
       render: (obj: any) => (
         <Space size="middle">
-          
           <EditStudent />
-          
 
           <Popconfirm
             title="Are you sure to delete this task?"
-            onConfirm={() =>{
-           
-             return confirm(obj)
-              
+            onConfirm={() => {
+              return confirm(obj);
             }}
             okText="Yes"
             cancelText="No"
@@ -85,14 +80,17 @@ export default function StudentList() {
     },
   ];
 
-  const [loading, setLoading] = useState(false);
-  // typescript的语法问题
-  const [studentProfile, setStudentProfile] = useState<Record<string, any>>([]);
-  const [searchValue, setSearchValue] = useState("");
-  // pagination
-  // # 每次点击分页都需要重新向后台请求数据
-  // const [pageSize, setPageSize] = useState(20);
+  const [loading, setLoading] = useState(false); // loading effect
+
+  const [studentProfile, setStudentProfile] = useState<Record<string, any>>([]); // store student data
+  const [searchValue, setSearchValue] = useState(""); // store the value of input when searching
+  const [total, setTotal] = useState(); // store the total number of student data in server
+
+  // pagination # 每次点击分页都需要重新向后台请求数据
+  // page pageSize ---> 写成 object ? 
+  const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+
   const [deletedItem, setDeletedItem] = useState("");
 
   // get and show students list
@@ -101,14 +99,19 @@ export default function StudentList() {
     const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
     axios
       // 再看看API请求的资料
-      .get("http://cms.chtoma.com/api/students?page=1&limit=0", {
-        headers: { Authorization: `Bearer ${userToken}` },
-      })
+      .get(
+        `http://cms.chtoma.com/api/students?page=${page}&limit=${pageSize}`,
+        {
+          headers: { Authorization: `Bearer ${userToken}` },
+        }
+      )
       .then(function (response) {
         const { students } = response.data.data;
-        const studentProfile = students;
-        if (studentProfile) {
-          setStudentProfile(studentProfile);
+        const { total } = response.data.data;
+
+        if (students) {
+          setTotal(total);
+          setStudentProfile(students);
         }
       })
       .catch(function (error) {
@@ -117,16 +120,14 @@ export default function StudentList() {
       .finally(() => {
         setLoading(false);
       });
-    // # 每次点击分页都需要重新向后台请求数据 ( page改变，重新渲染一次 )
-  }, [page, searchValue, deletedItem]);
-
-
+    // # 每次点击分页都需要重新向后台请求数据 ( page等改变，重新渲染一次 )
+  }, [page, pageSize, searchValue, deletedItem]);
 
   // handle delete student action
   const confirm = (obj: any) => {
     const id: string = obj.id;
 
-    console.log(id)
+    console.log(id);
     const base = "http://cms.chtoma.com/api";
     const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
     axios
@@ -143,8 +144,8 @@ export default function StudentList() {
       });
   };
 
-  // Pagination function
-  const data = useMemo(() => {
+  // Search student
+  const filteredData = useMemo(() => {
     return studentProfile.filter((item: { name: string }) => {
       if (searchValue === "") {
         return true;
@@ -152,8 +153,6 @@ export default function StudentList() {
       return item.name.toLowerCase().includes(searchValue.toLowerCase());
     });
   }, [searchValue, studentProfile]);
-
-
 
   return (
     <ManagerLayout>
@@ -167,19 +166,22 @@ export default function StudentList() {
             style={{ width: "30%" }}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-
           <AddStudent />
         </div>
 
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           loading={loading}
-          pagination={{
-            onChange: (page: number, pageSize: number) => {
-              setPage(page);
-              // setPageSize(pageSize);
-            },
+          pagination={false}
+        />
+        <Pagination
+          current={page}
+          pageSize={pageSize}
+          total={total}
+          onChange={(page: number, pageSize: number) => {
+            setPage(page);
+            setPageSize(pageSize);
           }}
         />
       </div>
