@@ -198,7 +198,7 @@ export default function ManagerLayout({ children }: any) {
               backgroundColor: 'white', 
             }}
           >
-            {/* <h1>CMS MANAGEMENT SYSTEM{currentMenuItem}</h1> */}
+
             {children}
           </Content>
         </Layout>
