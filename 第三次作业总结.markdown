@@ -1,9 +1,0 @@
-# sider navbar 和 对于的标题显示的问题
-  点击navbar跳转到其他内容后，又自己跳回去了
-
-# 数据读取和展示的问题
-  可以取到第一层的数据，courses、type 第二层数组不会取
-  No.排序问题
-  Join time问题
-
-# search/add/edit/delete等功能没有做
