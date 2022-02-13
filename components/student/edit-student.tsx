@@ -1,7 +1,6 @@
-import React, {  useState } from "react";
-import { Button, Modal, Form, Input,  Select } from "antd";
+import React, { useState } from "react";
+import { Button, Modal, Form, Input, Select } from "antd";
 import axios from "axios";
-
 
 interface Values {
   title: string;
@@ -20,26 +19,22 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
   onCreate,
   onCancel,
 }) => {
-
   const formItemLayout = {
     labelCol: { span: 6 },
   };
   const formInputLayout = {
-    style: { width: '80%'}
+    style: { width: "80%" },
   };
 
   const { Option } = Select;
   const [form] = Form.useForm();
 
-  const [editedStudent,setEditedStudent] = useState();
-
-
   return (
     <Modal
-    style={{ minWidth: '520px' }}
+      style={{ minWidth: "520px" }}
       visible={visible}
-      title="Edit Student"
-      okText="Update"
+      title="Add Student"
+      okText="Add"
       cancelText="Cancel"
       onCancel={onCancel}
       onOk={() => {
@@ -57,11 +52,10 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
       <Form
         form={form}
         name="form_in_modal"
-        initialValues={{ modifier: "public", name: {name} }}
-  
+        initialValues={{ modifier: "public"}}
       >
         <Form.Item
-         {...formItemLayout}
+          {...formItemLayout}
           name="name"
           label="Name"
           rules={[
@@ -71,10 +65,10 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
             },
           ]}
         >
-          <Input  {...formInputLayout}/>
+          <Input {...formInputLayout} />
         </Form.Item>
         <Form.Item
-        {...formItemLayout}
+          {...formItemLayout}
           name="email"
           label="Email"
           rules={[
@@ -85,11 +79,19 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
             },
           ]}
         >
-          <Input  {...formInputLayout}/>
+          <Input {...formInputLayout} />
         </Form.Item>
 
-        <Form.Item {...formItemLayout} name="country" label="Area" rules={[{ required: true }]}>
-          <Select {...formInputLayout} placeholder="Select a option and change input text above" >
+        <Form.Item
+          {...formItemLayout}
+          name="country"
+          label="Area"
+          rules={[{ required: true }]}
+        >
+          <Select
+            {...formInputLayout}
+            placeholder="Select a option and change input text above"
+          >
             <Option value="china">China</Option>
             <Option value="nzl">New Zealand</Option>
             <Option value="canada">Canada</Option>
@@ -98,12 +100,15 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
         </Form.Item>
 
         <Form.Item
-        {...formItemLayout}
+          {...formItemLayout}
           name="type"
           label="Student Type"
           rules={[{ required: true }]}
         >
-          <Select {...formInputLayout} placeholder="Select a option and change input text above" >
+          <Select
+            {...formInputLayout}
+            placeholder="Select a option and change input text above"
+          >
             <Option value="2">developer</Option>
             <Option value="1">tester</Option>
           </Select>
@@ -116,7 +121,8 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
 export default function AddStudent() {
   const [visible, setVisible] = useState(false);
   const [updated, setUpdated] = useState(false);
-
+  
+ 
 
   const onCreate = (values: any) => {
     console.log("Received values of form: ", values);
@@ -138,7 +144,7 @@ export default function AddStudent() {
       )
       .then((res) => {
         console.log(res);
-        setUpdated(!updated)
+        setUpdated(!updated);
       })
       .catch((err) => {
         console.log(err);
@@ -151,10 +157,8 @@ export default function AddStudent() {
     <div>
       <Button
         type="primary"
-        onClick={(record) => {
+        onClick={() => {
           setVisible(true);
-          console.log(record)
-          
         }}
       >
         Edit Student
@@ -165,7 +169,9 @@ export default function AddStudent() {
         onCancel={() => {
           setVisible(false);
         }}
+
       />
+      
     </div>
   );
 }

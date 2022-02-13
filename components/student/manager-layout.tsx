@@ -101,14 +101,14 @@ export default function ManagerLayout({ children }: any) {
 
             <Menu.Item key="/manager" icon={<UserOutlined />}>
               <Link href="/dashboard/manager">
-                <a>Overview</a>
+                Overview
               </Link>
             </Menu.Item>
 
             <SubMenu key="sub1" icon={<MailOutlined />} title="Student">
               <Menu.Item key="/manager/students">
                 <Link href="/dashboard/manager/students">
-                  <a>Student List</a>
+                  Student List
                 </Link>
               </Menu.Item>
             </SubMenu>
@@ -116,7 +116,7 @@ export default function ManagerLayout({ children }: any) {
             <SubMenu key="sub2" icon={<MailOutlined />} title="Teacher">
               <Menu.Item key="/manager/teacher">
                 <Link href="/dashboard/manager/teacher">
-                  <a>Teacher List</a>
+                  Teacher List
                 </Link>
               </Menu.Item>
             </SubMenu>
@@ -124,24 +124,24 @@ export default function ManagerLayout({ children }: any) {
             <SubMenu key="sub3" icon={<MailOutlined />} title="Course">
               <Menu.Item key="/manager/courses">
                 <Link href="/dashboard/manager/courses">
-                  <a>All Courses</a>
+                  All Courses
                 </Link>
               </Menu.Item>
               <Menu.Item key="/manager/courses/add-course">
                 <Link href="/dashboard/manager/courses/add-course">
-                  <a>Add Course</a>
+                  Add Course
                 </Link>
               </Menu.Item>
               <Menu.Item key="/manager/courses/edit-course">
                 <Link href="/dashboard/manager/courses/edit-course">
-                  <a>Edit Course</a>
+                  Edit Course
                 </Link>
               </Menu.Item>
             </SubMenu>
 
             <Menu.Item key="/manager/message" icon={<UserOutlined />}>
               <Link href="/dashboard/manager/message">
-                <a>Message</a>
+                Message
               </Link>
             </Menu.Item>
           </Menu>

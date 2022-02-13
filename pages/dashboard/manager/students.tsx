@@ -1,13 +1,21 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "antd/dist/antd.css";
 import axios from "axios";
-import ManagerLayout from "../../../components/manager/manager-layout";
-import { Table, Input, Space, Popconfirm, message, Pagination } from "antd";
+import ManagerLayout from "../../../components/student/manager-layout";
+import {
+  Table,
+  Input,
+  Space,
+  Popconfirm,
+  message,
+  Pagination,
+} from "antd";
 import { formatDistanceToNow } from "date-fns";
-import AddStudent from "../../../components/manager/add-student";
-import EditStudent from "../../../components/manager/edit-students";
+import AddEditStudent from "../../../components/student/add-student";
+
 
 export default function StudentList() {
+  
   const columns = [
     {
       title: "No.",
@@ -34,9 +42,10 @@ export default function StudentList() {
     {
       title: "Selected Curriculum",
       key: "courses",
-      render: (_: unknown, obj: any, _1: unknown) => {
-        return obj.courses.map((item: { name: string }) => {
-          return <span key="item.courseId">{item.name}</span>;
+      render: (_: unknown, obj:{courses:{name: string,courseId:number}}, _1: unknown):string => {
+        const courses = obj.courses;
+        return courses.map((item) => {
+          return <span key={item.courseId}>{item.name}</span>;
         });
       },
     },
@@ -45,32 +54,35 @@ export default function StudentList() {
       title: "Student Type",
 
       // Typescript 类型问题
-      // render: (_: unknown, obj: string | number | unknown, _1: unknown) => {
-      //   return <p>{obj.type.name}</p>;
-      // },
+      render: (_: unknown, obj:{type:{name: number}}, _1: unknown) => {
+        return <p>{obj.type.name}</p>;
+      },
     },
 
     {
       // 引入了一个data-fns api
       title: "Join Time",
       key: "createdAt",
-      render: (obj:any) => {
+      render: (obj: any) => {
         const result = formatDistanceToNow(new Date(obj.createdAt));
         return <p>{result}</p>;
-        
       },
     },
     {
       title: "Action",
       key: "action",
-      render: (obj: any) => (
+      render: (record: any) => (
         <Space size="middle">
-          <EditStudent />
+          {/* to edit student profile */}
+          
+          <AddEditStudent name={record.name} email={record.email} country={record.country} id={record.id}/>
+        
 
+          {/* to delete student */}
           <Popconfirm
             title="Are you sure to delete this task?"
             onConfirm={() => {
-              return confirm(obj);
+              return confirm(record);
             }}
             okText="Yes"
             cancelText="No"
@@ -83,16 +95,20 @@ export default function StudentList() {
   ];
 
   const [loading, setLoading] = useState(false); // loading effect
-  const [studentProfile, setStudentProfile] = useState<Record<string, any>[]>([]); // store student data
+  const [studentProfile, setStudentProfile] = useState<Record<string, any>[]>(
+    []
+  ); // store student data
   const [searchValue, setSearchValue] = useState(""); // store the value of input when searching
   const [total, setTotal] = useState(); // store the total number of student data in server
   // pagination # 每次点击分页都需要重新向后台请求数据
-  // page pageSize ---> 写成 object ? 
+  // page pageSize ---> 写成 object ?
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+
   const [deletedItem, setDeletedItem] = useState("");
 
- 
+
+
   // get and show students list
   useEffect(() => {
     setLoading(true);
@@ -124,18 +140,21 @@ export default function StudentList() {
   }, [page, pageSize, searchValue, deletedItem]);
 
 
-    // Search student
-    const filteredData = useMemo(
-      () => studentProfile.filter((item) => !searchValue || (item.name).toLowerCase().includes(searchValue.toLowerCase())), 
-      [searchValue, studentProfile])
-  
-      
-      
-  // handle delete student action
-  const confirm = (obj: any) => {
-    const id: string = obj.id;
+  // Search student
+  const filteredData = useMemo(
+    () =>
+      studentProfile.filter(
+        (item) =>
+          !searchValue ||
+          item.name.toLowerCase().includes(searchValue.toLowerCase())
+      ),
+    [searchValue, studentProfile]
+  );
 
-    console.log(id);
+
+  // handle delete student action
+  const confirm = (record: any) => {
+    const id: string = record.id;
     const base = "http://cms.chtoma.com/api";
     const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
     axios
@@ -143,7 +162,6 @@ export default function StudentList() {
         headers: { Authorization: `Bearer ${userToken}` },
       })
       .then((res) => {
-        // console.log(res);
         message.success("Delete Successfully");
         setDeletedItem(id);
       })
@@ -152,16 +170,12 @@ export default function StudentList() {
       });
   };
 
- 
-
-
   return (
     <ManagerLayout>
       {/* 需要做下 breadcrumb */}
       <h1>CMS MANAGEMENT SYSTEM / Manager / Student List</h1>
       <div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          
           {/* Search by student name */}
           <Input
             placeholder="input search text"
@@ -169,7 +183,7 @@ export default function StudentList() {
             style={{ width: "30%" }}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          <AddStudent />
+          <AddEditStudent />
         </div>
 
         <Table
