@@ -2,20 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import "antd/dist/antd.css";
 import axios from "axios";
 import ManagerLayout from "../../../components/student/manager-layout";
-import {
-  Table,
-  Input,
-  Space,
-  Popconfirm,
-  message,
-  Pagination,
-} from "antd";
+import { Table, Input, Space, Popconfirm, message, Pagination } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import AddEditStudent from "../../../components/student/add-student";
 
-
 export default function StudentList() {
-  
   const columns = [
     {
       title: "No.",
@@ -42,7 +33,11 @@ export default function StudentList() {
     {
       title: "Selected Curriculum",
       key: "courses",
-      render: (_: unknown, obj:{courses:{name: string,courseId:number}}, _1: unknown):string => {
+      render: (
+        _: unknown,
+        obj: { courses: { name: string; courseId: number } },
+        _1: unknown
+      ): string => {
         const courses = obj.courses;
         return courses.map((item) => {
           return <span key={item.courseId}>{item.name}</span>;
@@ -54,7 +49,7 @@ export default function StudentList() {
       title: "Student Type",
 
       // Typescript 类型问题
-      render: (_: unknown, obj:{type:{name: number}}, _1: unknown) => {
+      render: (_: unknown, obj: { type: { name: number } }, _1: unknown) => {
         return <p>{obj.type.name}</p>;
       },
     },
@@ -71,12 +66,15 @@ export default function StudentList() {
     {
       title: "Action",
       key: "action",
-      render: (record: any) => (
+      render: (record: {
+        name: string;
+        email: string;
+        country: string;
+        id: number;
+      }) => (
         <Space size="middle">
           {/* to edit student profile */}
-          
-          <AddEditStudent name={record.name} email={record.email} country={record.country} id={record.id}/>
-        
+          <AddEditStudent {...record} />
 
           {/* to delete student */}
           <Popconfirm
@@ -106,8 +104,6 @@ export default function StudentList() {
   const [page, setPage] = useState(1);
 
   const [deletedItem, setDeletedItem] = useState("");
-
-
 
   // get and show students list
   useEffect(() => {
@@ -139,7 +135,6 @@ export default function StudentList() {
     // # 每次点击分页都需要重新向后台请求数据 ( page等改变，重新渲染一次 )
   }, [page, pageSize, searchValue, deletedItem]);
 
-
   // Search student
   const filteredData = useMemo(
     () =>
@@ -150,7 +145,6 @@ export default function StudentList() {
       ),
     [searchValue, studentProfile]
   );
-
 
   // handle delete student action
   const confirm = (record: any) => {
@@ -171,9 +165,7 @@ export default function StudentList() {
   };
 
   return (
-    <ManagerLayout>
-      {/* 需要做下 breadcrumb */}
-      <h1>CMS MANAGEMENT SYSTEM / Manager / Student List</h1>
+    <ManagerLayout> 
       <div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           {/* Search by student name */}

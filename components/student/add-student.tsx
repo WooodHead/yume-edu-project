@@ -1,29 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal, Form, Input, Select } from "antd";
 import axios from "axios";
 
-// interface Values {
-//   title: string;
-//   description: string;
-//   modifier: string;
-// }
 
-// interface CollectionCreateFormProps {
-//   visible: boolean;
-//   onCreate: (values: Values) => void;
-//   onCancel: () => void;
-// }
+ // layout
+ const formItemLayout = {
+  labelCol: { span: 6 },
+};
+const formInputLayout = {
+  style: { width: "80%" },
+};
+
+interface record {
+  name?: string,
+  email?: string,
+  country?: string,
+  id?: number
+}
+
 
 // ****** country的初始值设置 ******** ？？
-export default function AddEditStudent(props: { name; email; country; id }) {
-  // layout
-  const formItemLayout = {
-    labelCol: { span: 6 },
-  };
-  const formInputLayout = {
-    style: { width: "80%" },
-  };
-
+export default function AddEditStudent(props: record) {
   // const {name} = props.name
   const { Option } = Select;
   const [form] = Form.useForm();
@@ -31,7 +28,8 @@ export default function AddEditStudent(props: { name; email; country; id }) {
   const [visible, setVisible] = useState(false);
   const [updated, setUpdated] = useState(false);
 
-  const onCreate = (values: any) => {
+  // 
+  const onFinish = (values) => {
     console.log("Received values of form: ", values);
 
     const base = "http://cms.chtoma.com/api";
@@ -81,6 +79,26 @@ export default function AddEditStudent(props: { name; email; country; id }) {
     setVisible(false);
   };
 
+  // ******** refresh怎么写 **********
+  // useEffect(() => {
+  //   const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
+  //   axios
+  //     // 再看看API请求的资料
+  //     .get(
+  //       `http://cms.chtoma.com/api/students/${props.id}`,
+  //       {
+  //         headers: { Authorization: `Bearer ${userToken}` },
+  //       }
+  //     )
+  //     .then((res)=> {
+        
+  //     })
+  //     .catch((err)=> {
+  //       console.log(err);
+  //     })
+
+  // },[props.id, updated])
+
   return (
     <div>
       <Button
@@ -97,13 +115,12 @@ export default function AddEditStudent(props: { name; email; country; id }) {
         title={!!props.id ? "Edit Student" : "Add Student"}
         okText={!!props.id ? "Update" : "Add"}
         cancelText="Cancel"
-        // onCancel={onCancel}
         onOk={() => {
           form
             .validateFields()
             .then((values) => {
               form.resetFields();
-              onCreate(values);
+              onFinish(values);
             })
             .catch((info) => {
               console.log("Validate Failed:", info);
@@ -120,8 +137,9 @@ export default function AddEditStudent(props: { name; email; country; id }) {
             modifier: "public",
             name: props.name,
             email: props.email,
+            country: props.country,
           }}
-          onFinish={onCreate}
+          onFinish={onFinish}
         >
           <Form.Item
             {...formItemLayout}
