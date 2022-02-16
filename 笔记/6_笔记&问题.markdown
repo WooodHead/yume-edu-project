@@ -1,0 +1,19 @@
+# 笔记
+
+* student详情页 
+ 1. 动态路由传参 + 跳转页面接收参数
+     创建动态路由在pages文件夹下 创建接收参数页面[id].tsx
+     参考：https://www.jianshu.com/p/7d7756c4a927
+          https://nextjs.org/docs/api-reference/next/router#userouter
+
+ 2. 传递进来的参数在router.query.id中
+ 3. 'GET' student data
+ 4. 解构赋值/创建数组接收数据，并set出去 （？获取到的数据不能直接用）
+ 5. 遍历展示内容
+
+
+ # 问题
+ 1. submenu点击之后不是展开状态
+ 2. add功能，提交后不能自动刷新
+ 3. edit功能写的不对。修改提交后，查看后台说是成功修改了，但点开查看学生详情，里面还是初始添加时的信息。GET{id}和PUT查看同一个id发现，里面内容不一样。GET{id}是初始添加时的内容，PUT是后来修改的内容。
+ 4. 

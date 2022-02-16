@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import "antd/dist/antd.css";
 import axios from "axios";
-import ManagerLayout from "../../../components/student/manager-layout";
+import ManagerLayout from "../../../../components/student/manager-layout";
 import { Table, Input, Space, Popconfirm, message, Pagination } from "antd";
 import { formatDistanceToNow } from "date-fns";
-import AddEditStudent from "../../../components/student/add-student";
+import AddEditStudent from "../../../../components/student/add-student";
 
 export default function StudentList() {
   const columns = [
@@ -17,8 +18,16 @@ export default function StudentList() {
     },
     {
       title: "Name",
-      dataIndex: "name",
       key: "name",
+      render(obj: { name: string, id: number }, _: unknown, _1: number) {
+        console.log(obj.name);
+        return (
+          // 动态路由传参 + 跳转页面接收参数 [id].tsx
+          <Link href={`/dashboard/manager/students/${obj.id}`}>
+            <a>{obj.name}</a>
+          </Link>
+        );
+      },
     },
     {
       title: "Area",
@@ -165,7 +174,7 @@ export default function StudentList() {
   };
 
   return (
-    <ManagerLayout> 
+    <ManagerLayout>
       <div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           {/* Search by student name */}

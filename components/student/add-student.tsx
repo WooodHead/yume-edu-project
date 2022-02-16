@@ -19,7 +19,7 @@ interface record {
 }
 
 
-// ****** country的初始值设置 ******** ？？
+
 export default function AddEditStudent(props: record) {
   // const {name} = props.name
   const { Option } = Select;
@@ -37,6 +37,7 @@ export default function AddEditStudent(props: record) {
     const { name, country, email, type } = values;
 
     if (props.id === undefined) {
+      // add a new student
       axios
         .post(
           `${base}/students`,
@@ -56,6 +57,7 @@ export default function AddEditStudent(props: record) {
           console.log(err);
         });
     } else {
+      // edit an existing student
       axios
         .put(
           `${base}/students/`,
