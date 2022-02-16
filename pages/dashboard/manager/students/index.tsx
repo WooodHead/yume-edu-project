@@ -7,7 +7,6 @@ import { Table, Input, Space, Popconfirm, message, Pagination } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import AddEditStudent from "../../../../components/student/add-student";
 
-
 export default function StudentList() {
   const columns = [
     {
@@ -20,7 +19,7 @@ export default function StudentList() {
     {
       title: "Name",
       key: "name",
-      render(obj: { name: string, id: number }, _: unknown, _1: number) {
+      render(obj: { name: string; id: number }, _: unknown, _1: number) {
         return (
           // 动态路由传参 + 跳转页面接收参数 [id].tsx
           <Link href={`/dashboard/manager/students/${obj.id}`}>
@@ -75,15 +74,13 @@ export default function StudentList() {
     {
       title: "Action",
       key: "action",
-      render: (record: {
-        name: string;
-        email: string;
-        country: string;
-        id: number;
-      }) => (
+      render: (
+        id: number,
+        record: { name: string; country: string; email: string; type: number }
+      ) => (
         <Space size="middle">
           {/* to edit student profile */}
-          <AddEditStudent {...record} />
+          <AddEditStudent id={id} {...record} updated={updated} setUpdated={setUpdated} />
 
           {/* to delete student */}
           <Popconfirm
@@ -109,36 +106,37 @@ export default function StudentList() {
   const [total, setTotal] = useState(0); // store the total number of student data in server
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+
   // const [paginator, setPaginator] = useState({
   //   pageSize: 10,
   //   page: 1,
-  //   total: 0, 
-  // }) 
+  //   total: 0,
+  // })
   // console.log("total", paginator)
   const [deletedItem, setDeletedItem] = useState("");
+  const [updated, setUpdated] = useState(false); //refresh数据源（传递到AddEditStudent组件）
+
+
 
   // get and show students list
   useEffect(() => {
     setLoading(true);
     const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
-    
+
     // 如果有searchValue
     let path = `page=${page}&limit=${pageSize}`;
-    if (searchValue){
-      path = `query=${searchValue}&page=${page}&limit=${pageSize}`
+    if (searchValue) {
+      path = `query=${searchValue}&page=${page}&limit=${pageSize}`;
     }
     axios
       // 再看看API请求的资料
-      .get(
-        `http://cms.chtoma.com/api/students?${path}`,
-        {
-          headers: { Authorization: `Bearer ${userToken}` },
-        }
-      )
+      .get(`http://cms.chtoma.com/api/students?${path}`, {
+        headers: { Authorization: `Bearer ${userToken}` },
+      })
       .then(function (response) {
         const { students } = response.data.data;
         const { total } = response.data.data;
-        console.log(total)
+        console.log(total);
         if (students) {
           setTotal(total);
           setStudentProfile(students);
@@ -151,7 +149,7 @@ export default function StudentList() {
         setLoading(false);
       });
     // # 每次点击分页都需要重新向后台请求数据 ( page等改变，重新渲染一次 )
-  }, [page,pageSize, searchValue, deletedItem]);
+  }, [page, pageSize, searchValue, deletedItem, updated]);
 
   // Search student
   const filteredData = useMemo(
@@ -193,29 +191,26 @@ export default function StudentList() {
             style={{ width: "30%" }}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          <AddEditStudent />
+          <AddEditStudent  updated={updated} setUpdated={setUpdated}/>
         </div>
 
         <Table
           columns={columns}
           dataSource={filteredData}
           loading={loading}
-
-          pagination={{ 
+          pagination={{
             current: page,
             pageSize: pageSize,
             total: total,
 
-            onChange(page: number, pageSize: number){
-              setPage(page)
-              setPageSize(pageSize)
-              setTotal(total)
+            onChange(page: number, pageSize: number) {
+              setPage(page);
+              setPageSize(pageSize);
+              setTotal(total);
               // setPaginator({...paginator,page,pageSize})
-              
-            }
+            },
           }}
         />
-        
       </div>
     </ManagerLayout>
   );

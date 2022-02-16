@@ -48,6 +48,9 @@ export default function ManagerLayout({ children }: any) {
   const path = router.pathname;
   console.log("当前路径", router);
 
+  const [currentOpen, setCurrentOpen] = useState([]);
+  console.log("openkeys",currentOpen)
+
   return (
     <div>
       <Head>
@@ -67,9 +70,16 @@ export default function ManagerLayout({ children }: any) {
           <Menu
             theme="dark"
             mode="inline"
-            selectedKeys={[path]}
+            defaultSelectedKeys={['/dashboard/manager/students']}
+            defaultOpenKeys={['/dashboard/manager/students']}
+            // selectedKeys={[path]}
+            // // openKeys={currentOpen}
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0" }}
+            // onClick={(e) => {
+            //   console.log(e.keyPath);
+            //   setCurrentOpen(e.keyPath[1]);
+            // }}
           >
             <div
               style={{
@@ -92,7 +102,7 @@ export default function ManagerLayout({ children }: any) {
               </Link>
             </Menu.Item>
 
-            <SubMenu key="sub1" icon={<MailOutlined />} title="Student">
+            <SubMenu key="/dashboard/manager/students" icon={<MailOutlined />} title="Student">
               <Menu.Item key="/dashboard/manager/students">
                 <Link href="/dashboard/manager/students">
                   <a>Student List</a>
@@ -100,13 +110,13 @@ export default function ManagerLayout({ children }: any) {
               </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="sub2" icon={<MailOutlined />} title="Teacher">
+            <SubMenu key="/dashboard/manager/teacher" icon={<MailOutlined />} title="Teacher">
               <Menu.Item key="/dashboard/manager/teacher">
                 <Link href="/dashboard/manager/teacher">Teacher List</Link>
               </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="sub3" icon={<MailOutlined />} title="Course">
+            <SubMenu key="/dashboard/manager/courses " icon={<MailOutlined />} title="Course">
               <Menu.Item key="/dashboard/manager/courses">
                 <Link href="/dashboard/manager/courses">All Courses</Link>
               </Menu.Item>
