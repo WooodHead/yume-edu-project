@@ -46,7 +46,7 @@ export default function StudentInfo(props: { id: number }) {
         const { data } = response.data;
         const { interest } = response.data.data; // 解构赋值，放到setInterest
         const { description } = response.data.data;
-        console.log("data", data);
+        // console.log("data", data);
         setInterest(interest);
         setDescription(description);
 
@@ -75,7 +75,7 @@ export default function StudentInfo(props: { id: number }) {
         setInfo(info);
         // console.log("接收到的info", info[0].value);
         setAboutInfo(aboutInfo);
-        console.log("接收到的aboutInfo", aboutInfo);
+        // console.log("接收到的aboutInfo", aboutInfo);
       })
       .catch((error) => {
         console.log(error);
@@ -85,6 +85,7 @@ export default function StudentInfo(props: { id: number }) {
   function callback(key) {
     console.log(key);
   }
+
   return (
     <ManagerLayout>
       <Row gutter={64}>
