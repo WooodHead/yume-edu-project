@@ -7,6 +7,7 @@ import { Table, Input, Space, Popconfirm, message, Pagination } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import AddEditStudent from "../../../../components/student/add-student";
 
+
 export default function StudentList() {
   const columns = [
     {
@@ -20,7 +21,6 @@ export default function StudentList() {
       title: "Name",
       key: "name",
       render(obj: { name: string, id: number }, _: unknown, _1: number) {
-        console.log(obj.name);
         return (
           // 动态路由传参 + 跳转页面接收参数 [id].tsx
           <Link href={`/dashboard/manager/students/${obj.id}`}>
@@ -106,22 +106,31 @@ export default function StudentList() {
     []
   ); // store student data
   const [searchValue, setSearchValue] = useState(""); // store the value of input when searching
-  const [total, setTotal] = useState(); // store the total number of student data in server
-  // pagination # 每次点击分页都需要重新向后台请求数据
-  // page pageSize ---> 写成 object ?
+  const [total, setTotal] = useState(0); // store the total number of student data in server
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
-
+  // const [paginator, setPaginator] = useState({
+  //   pageSize: 10,
+  //   page: 1,
+  //   total: 0, 
+  // }) 
+  // console.log("total", paginator)
   const [deletedItem, setDeletedItem] = useState("");
 
   // get and show students list
   useEffect(() => {
     setLoading(true);
     const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
+    
+    // 如果有searchValue
+    let path = `page=${page}&limit=${pageSize}`;
+    if (searchValue){
+      path = `query=${searchValue}&page=${page}&limit=${pageSize}`
+    }
     axios
       // 再看看API请求的资料
       .get(
-        `http://cms.chtoma.com/api/students?page=${page}&limit=${pageSize}`,
+        `http://cms.chtoma.com/api/students?${path}`,
         {
           headers: { Authorization: `Bearer ${userToken}` },
         }
@@ -129,7 +138,7 @@ export default function StudentList() {
       .then(function (response) {
         const { students } = response.data.data;
         const { total } = response.data.data;
-
+        console.log(total)
         if (students) {
           setTotal(total);
           setStudentProfile(students);
@@ -142,7 +151,7 @@ export default function StudentList() {
         setLoading(false);
       });
     // # 每次点击分页都需要重新向后台请求数据 ( page等改变，重新渲染一次 )
-  }, [page, pageSize, searchValue, deletedItem]);
+  }, [page,pageSize, searchValue, deletedItem]);
 
   // Search student
   const filteredData = useMemo(
@@ -191,17 +200,22 @@ export default function StudentList() {
           columns={columns}
           dataSource={filteredData}
           loading={loading}
-          pagination={false}
-        />
-        <Pagination
-          current={page}
-          pageSize={pageSize}
-          total={total}
-          onChange={(page: number, pageSize: number) => {
-            setPage(page);
-            setPageSize(pageSize);
+
+          pagination={{ 
+            current: page,
+            pageSize: pageSize,
+            total: total,
+
+            onChange(page: number, pageSize: number){
+              setPage(page)
+              setPageSize(pageSize)
+              setTotal(total)
+              // setPaginator({...paginator,page,pageSize})
+              
+            }
           }}
         />
+        
       </div>
     </ManagerLayout>
   );
