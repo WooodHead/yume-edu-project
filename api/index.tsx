@@ -4,6 +4,16 @@
 import ajax from "./api";
 import { getUserToken } from "../utils/storageUtils";
 
+interface EditStudentValue {
+  name?: string;
+  email?: string;
+  country?: string;
+  id?: number;
+  type?: number;
+  updated?: unknown;
+  setUpdated?: unknown;
+}
+
 // signIn
 export const reqSignIn = (email: string, password: string, role: string) =>
   ajax("/login", "POST", { email, password, role });
@@ -44,5 +54,45 @@ export const reqDeleteStudent = (id: number) => {
 };
 
 // add a new student
-export const reqAddStudent = (student: any) =>
-  ajax("/students", "POST", student); // 接收student对象
+export const reqAddStudent = ({
+  name,
+  country,
+  email,
+  type,
+}: EditStudentValue) => {
+  const userToken = getUserToken();
+  ajax(
+    "/students",
+    "POST",
+    {
+      name,
+      country,
+      email,
+      type,
+    },
+    { headers: { Authorization: `Bearer ${userToken}` } }
+  );
+};
+
+// edit a student
+export const reqEditStudent = ({
+  id,
+  name,
+  country,
+  email,
+  type,
+}: EditStudentValue) => {
+  const userToken = getUserToken();
+  ajax(
+    "/students",
+    "PUT",
+    {
+      id,
+      name,
+      country,
+      email,
+      type,
+    },
+    { headers: { Authorization: `Bearer ${userToken}` } }
+  );
+};
