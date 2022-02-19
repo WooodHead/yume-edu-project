@@ -9,18 +9,17 @@
 import axios from "axios";
 import { message } from "antd";
 
-
-
 const baseUrl = "http://cms.chtoma.com/api";
 
-export default function ajax(url: string,
+export default function ajax(
+  url: string,
   method: string,
   data?: object,
-  headers?: object) {
-
+  headers?: object
+) {
   return new Promise((resolve) => {
     let promise;
-    // 1. 执行异步ajax请求
+
     if (method === "GET") {
       promise = axios.get(baseUrl + url, headers);
     } else if (method === "POST") {
@@ -28,16 +27,15 @@ export default function ajax(url: string,
     } else if (method === "DELETE") {
       promise = axios.delete(baseUrl + url, headers);
     } else {
-      promise = axios.put(baseUrl + url);
+      promise = axios.put(baseUrl + url, data, headers);
     }
 
-    // 2. 如果成功，调用resolve
     promise
       .then((res) => {
         resolve(res);
       })
       .catch((err) => {
         message.error("something wrong", err.message);
-      }); // 3. 如果失败，不reject(err), 而是alter错误提示
+      });
   });
 }

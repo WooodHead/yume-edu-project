@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, Select, message } from "antd";
-import axios from "axios";
+import { reqAddStudent, reqEditStudent } from "../../api";
 
 // layout
 const formItemLayout = {
@@ -16,67 +16,35 @@ interface EditStudentValue {
   country?: string;
   id?: number;
   type?: number;
-  updated?:unknown;
-  setUpdated?:unknown;
+  updated?: unknown;
+  setUpdated?: unknown;
 }
 
 export default function AddEditStudent(props: EditStudentValue): JSX.Element {
-  const { id, updated, setUpdated, name, email, country, type} = props;
+  const { id, updated, setUpdated, name, email, country } = props;
   const { Option } = Select;
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
 
-  const onFinish = (values: EditStudentValue) => {
-    const base = "http://cms.chtoma.com/api";
-    const userToken = JSON.parse(localStorage.getItem("user") as string).token;
-    // const { name, country, email, type } = values;
-
+  const onFinish = async (values: EditStudentValue) => {
+    const { name, email, country, type } = values;
     if (!id) {
-      // add a new student
-      axios
-        .post(
-          `${base}/students`,
-          {
-            name,
-            country,
-            email,
-            type,
-          },
-          { headers: { Authorization: `Bearer ${userToken}` } }
-        )
-        .then((res) => {
-          console.log(res);
-          setUpdated(!updated); //refresh数据源
-          message.success('Add successful');
-        })
-        .catch((err) => {
-          console.log(err);
-          message.error('Addition Failed');
-        });
+      // add a student
+      const response = await reqAddStudent({
+        name,
+        country,
+        email,
+        type,
+      });
+      setUpdated(!updated); //refresh数据源
+      message.success("Add successful");
     } else {
       // edit an existing student
-      axios
-        .put(
-          `${base}/students/`,
-          {
-            id: props.id,
-            name,
-            country,
-            email,
-            type,
-          },
-          { headers: { Authorization: `Bearer ${userToken}` } }
-        )
-        .then((res) => {
-          console.log(res);
-          setUpdated(!updated); //refresh数据源
-          message.success('Edit successful');
-        })
-        .catch((err) => {
-          console.log(err);
-          message.error('Edition Failed');
-        });
+      const response = await reqEditStudent({ id, name, country, email, type });
+      setUpdated(!updated);
+      message.success("Edit successful");
     }
+
     setVisible(false);
   };
 

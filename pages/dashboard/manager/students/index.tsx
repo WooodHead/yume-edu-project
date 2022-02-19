@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import "antd/dist/antd.css";
-import axios from "axios";
 import ManagerLayout from "../../../../components/student/manager-layout";
 import { Table, Input, Space, Popconfirm, message } from "antd";
 import { formatDistanceToNow } from "date-fns";
@@ -22,7 +21,6 @@ export default function StudentList() {
       key: "name",
       render(obj: { name: string; id: number }, _: unknown, _1: number) {
         return (
-          // 动态路由传参 + 跳转页面接收参数 [id].tsx
           <Link href={`/dashboard/manager/students/${obj.id}`}>
             <a>{obj.name}</a>
           </Link>
@@ -56,15 +54,12 @@ export default function StudentList() {
     {
       key: "type",
       title: "Student Type",
-
-      // Typescript 类型问题
-      render: (_: unknown, obj: { type: { name: number } }, _1: unknown) => {
+      render: (_: unknown, obj: { type: { name: string } }, _1: unknown) => {
         return <p>{obj.type.name}</p>;
       },
     },
 
     {
-      // 引入了一个data-fns api
       title: "Join Time",
       key: "createdAt",
       render: (obj: any) => {
@@ -104,12 +99,10 @@ export default function StudentList() {
     },
   ];
 
-  const [loading, setLoading] = useState(false); // loading effect
-  const [studentProfile, setStudentProfile] = useState<Record<string, any>[]>(
-    []
-  ); // store student data
+  const [loading, setLoading] = useState(false);
+  const [students, setStudents] = useState<Record<string, any>[]>([]); // store student data
   const [searchValue, setSearchValue] = useState(""); // store the value of input when searching
-  const [total, setTotal] = useState(0); // store the total number of student data in server
+  const [total, setTotal] = useState(0); // store the total number of student
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
 
@@ -120,23 +113,23 @@ export default function StudentList() {
   // })
   // console.log("total", paginator)
   const [deletedItem, setDeletedItem] = useState("");
-  const [updated, setUpdated] = useState(false); //refresh数据源（传递到AddEditStudent组件）
+  const [updated, setUpdated] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    // 如果有searchValue
-    let path = `page=${page}&limit=${pageSize}`;
-    if (searchValue) {
-      path = `query=${searchValue}&page=${page}&limit=${pageSize}`;
-    }
-    // fetch students list
     async function fetchData() {
+      // 如果有searchValue
+      let path = `page=${page}&limit=${pageSize}`;
+      if (searchValue) {
+        path = `query=${searchValue}&page=${page}&limit=${pageSize}`;
+      }
+      // fetch students list
       const res = await reqShowStudentList(page, pageSize);
       const { students } = res.data.data;
       const { total } = res.data.data;
       if (students) {
         setTotal(total);
-        setStudentProfile(students);
+        setStudents(students);
       }
     }
     fetchData();
@@ -146,18 +139,18 @@ export default function StudentList() {
   // Search student
   const filteredData = useMemo(
     () =>
-      studentProfile.filter(
+      students.filter(
         (item) =>
           !searchValue ||
           item.name.toLowerCase().includes(searchValue.toLowerCase())
       ),
-    [searchValue, studentProfile]
+    [searchValue, students]
   );
 
-  // delete student 
-  const confirm = async (record: any) => {
-    const id: string = record.id;
-    const result = await reqDeleteStudent(id);
+  // delete student
+  const confirm = (record: any) => {
+    const id = record.id;
+    const result = reqDeleteStudent(id);
     setDeletedItem(id);
     message.success("Delete Successfully");
   };
@@ -189,7 +182,6 @@ export default function StudentList() {
               setPage(page);
               setPageSize(pageSize);
               setTotal(total);
-              // setPaginator({...paginator,page,pageSize})
             },
           }}
         />
