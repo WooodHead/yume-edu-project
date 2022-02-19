@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import "antd/dist/antd.css";
-import { Menu, Layout, Button, Breadcrumb } from "antd";
+import { Layout, Button, Breadcrumb, Menu } from "antd";
 import Image from "next/image";
 import logo from "../../public/logo.png";
 import {
@@ -13,43 +13,23 @@ import {
   MailOutlined,
   BellOutlined,
 } from "@ant-design/icons";
-import axios from "axios";
+import { reqSignOut } from "../../api";
+import { removeUser } from "../../utils/storageUtils";
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
 export default function ManagerLayout({ children }: any) {
   const router = useRouter();
-  const onLogout = () => {
-    const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
-    console.log(userToken);
-    axios
-      .post(
-        "http://cms.chtoma.com/api/logout",
-        {},
-        { headers: { Authorization: `Bearer ${userToken}` } }
-      )
-      .then(() => {
-        localStorage.removeItem("cms");
-        router.push("/sign-in");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-
   const [collapsed, setCollapsed] = useState(false);
-  const toggle = () => {
-    setCollapsed(!collapsed);
+  const toggle = () => setCollapsed(!collapsed);
+
+  // sign out
+  const onLogout = () => {
+    const res = reqSignOut();
+    removeUser();
+    router.push("/sign-in");
   };
-
-  // useRouter中包含 pathname, query等
-  // 小结：使用router获取当前页路径 （React中使用的是withRouter）
-  const path = router.pathname;
-  console.log("当前路径", router);
-
-  const [currentOpen, setCurrentOpen] = useState([]);
-  console.log("openkeys",currentOpen)
 
   return (
     <div>
@@ -70,16 +50,10 @@ export default function ManagerLayout({ children }: any) {
           <Menu
             theme="dark"
             mode="inline"
-            defaultSelectedKeys={['/dashboard/manager/students']}
-            defaultOpenKeys={['/dashboard/manager/students']}
-            // selectedKeys={[path]}
-            // // openKeys={currentOpen}
+            selectedKeys={['1']}
+            defaultOpenKeys={['sub1']}
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0" }}
-            // onClick={(e) => {
-            //   console.log(e.keyPath);
-            //   setCurrentOpen(e.keyPath[1]);
-            // }}
           >
             <div
               style={{
@@ -96,44 +70,40 @@ export default function ManagerLayout({ children }: any) {
               </Link>
             </div>
 
-            <Menu.Item key="/dashboard/manager" icon={<UserOutlined />}>
-              <Link href="/dashboard/manager">
+            <Menu.Item key="1" icon={<UserOutlined />}>
+              <Link href="/dashboard/manager" passHref>
                 <a>Overview</a>
               </Link>
             </Menu.Item>
 
-            <SubMenu key="/dashboard/manager/students" icon={<MailOutlined />} title="Student">
-              <Menu.Item key="/dashboard/manager/students">
-                <Link href="/dashboard/manager/students">
+            <SubMenu key="sub1" icon={<MailOutlined />} title="Student">
+              <Menu.Item key="2">
+                <Link href="/dashboard/manager/students" passHref>
                   <a>Student List</a>
                 </Link>
               </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="/dashboard/manager/teacher" icon={<MailOutlined />} title="Teacher">
-              <Menu.Item key="/dashboard/manager/teacher">
+            <SubMenu key="sub2" icon={<MailOutlined />} title="Teacher">
+              <Menu.Item key="3">
                 <Link href="/dashboard/manager/teacher">Teacher List</Link>
               </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="/dashboard/manager/courses " icon={<MailOutlined />} title="Course">
-              <Menu.Item key="/dashboard/manager/courses">
-                <Link href="/dashboard/manager/courses">All Courses</Link>
+            <SubMenu key="sbu3" icon={<MailOutlined />} title="Course">
+              <Menu.Item key="4">
+                <Link href="">All Courses</Link>
               </Menu.Item>
-              <Menu.Item key="/dashboard/manager/courses/add-course">
-                <Link href="/dashboard/manager/courses/add-course">
-                  Add Course
-                </Link>
+              <Menu.Item key="5">
+                <Link href="">Add Course</Link>
               </Menu.Item>
-              <Menu.Item key="/dashboard/manager/courses/edit-course">
-                <Link href="/dashboard/manager/courses/edit-course">
-                  Edit Course
-                </Link>
+              <Menu.Item key="6">
+                <Link href="">Edit Course</Link>
               </Menu.Item>
             </SubMenu>
 
-            <Menu.Item key="/dashboard/manager/message" icon={<UserOutlined />}>
-              <Link href="/dashboard/manager/message">Message</Link>
+            <Menu.Item key="7" icon={<UserOutlined />}>
+              <Link href="">Message</Link>
             </Menu.Item>
           </Menu>
         </Sider>

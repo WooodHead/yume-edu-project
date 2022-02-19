@@ -37,7 +37,7 @@ export default function StudentInfo(props: { id: number }) {
 
   // GET student info
   useEffect(() => {
-    const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
+    const userToken = JSON.parse(localStorage.getItem("user") as string).token;
     axios
       .get(`http://cms.chtoma.com/api/students/${id}`, {
         headers: { Authorization: `Bearer ${userToken}` },
