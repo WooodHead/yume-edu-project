@@ -9,7 +9,8 @@ import { Layout, Input, Button, Checkbox, Form, Radio } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import { Typography } from "antd";
-
+import { reqSignIn } from "../api";
+import { saveUser } from "../utils/storageUtils";
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -22,29 +23,16 @@ interface LoginFormValues {
 
 export default function SignIn() {
   const router = useRouter();
-  const onFinish = (values: LoginFormValues) => {
-    console.log("Received values of form: ", values);
-    //
-
-    const base = "http://cms.chtoma.com/api";
-    const { password, ...rest } = values;
-
-    axios
-      .post(`${base}/login`, {
-        ...rest,
-        password: AES.encrypt(password, "cms").toString(),
-      })
-      .then((res) => {
-        // console.log(res);
-        const userInfo = res.data.data;
-        if (userInfo) {
-          localStorage.setItem("cms", JSON.stringify(userInfo));
-          router.push(`dashboard/${values.role}`);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+     // LogIn
+  const onFinish = async (values: LoginFormValues) => {
+    let { password, email, role } = values;
+    password = AES.encrypt(password, "cms").toString();
+    const response = await reqSignIn(email, password, role);
+    const user = response.data.data;
+    if (user) {
+      saveUser(user) 
+      router.push(`dashboard/${values.role}`);
+    }
   };
 
   return (

@@ -16,26 +16,22 @@ interface EditStudentValue {
   country?: string;
   id?: number;
   type?: number;
+  updated?:unknown;
+  setUpdated?:unknown;
 }
 
-export default function AddEditStudent(props: {
-  id?: number;
-  updated?: boolean;
-  setUpdated?: any;
-  record?: EditStudentValue;
-}) {
-  // const {name} = props.name
+export default function AddEditStudent(props: EditStudentValue): JSX.Element {
+  const { id, updated, setUpdated, name, email, country, type} = props;
   const { Option } = Select;
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
 
   const onFinish = (values: EditStudentValue) => {
-    // console.log("Received values of form: ", values);
     const base = "http://cms.chtoma.com/api";
-    const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
-    const { name, country, email, type } = values;
+    const userToken = JSON.parse(localStorage.getItem("user") as string).token;
+    // const { name, country, email, type } = values;
 
-    if (!props.id) {
+    if (!id) {
       // add a new student
       axios
         .post(
@@ -50,7 +46,7 @@ export default function AddEditStudent(props: {
         )
         .then((res) => {
           console.log(res);
-          props.setUpdated(!props.updated); //refresh数据源
+          setUpdated(!updated); //refresh数据源
           message.success('Add successful');
         })
         .catch((err) => {
@@ -73,7 +69,7 @@ export default function AddEditStudent(props: {
         )
         .then((res) => {
           console.log(res);
-          props.setUpdated(!props.updated); //refresh数据源
+          setUpdated(!updated); //refresh数据源
           message.success('Edit successful');
         })
         .catch((err) => {
@@ -92,13 +88,13 @@ export default function AddEditStudent(props: {
           setVisible(true);
         }}
       >
-        {!!props.id ? "Edit" : "Add Student"}
+        {!!id ? "Edit" : "Add Student"}
       </Button>
       <Modal
         style={{ minWidth: "520px" }}
         visible={visible}
-        title={!!props.id ? "Edit Student" : "Add Student"}
-        okText={!!props.id ? "Update" : "Add"}
+        title={!!id ? "Edit Student" : "Add Student"}
+        okText={!!id ? "Update" : "Add"}
         cancelText="Cancel"
         onOk={() => {
           form
@@ -120,9 +116,9 @@ export default function AddEditStudent(props: {
           name="form_in_modal"
           initialValues={{
             modifier: "public",
-            name: props.name,
-            email: props.email,
-            country: props.country,
+            name: name,
+            email: email,
+            country: country,
           }}
           onFinish={onFinish}
         >

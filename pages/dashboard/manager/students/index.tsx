@@ -3,9 +3,10 @@ import Link from "next/link";
 import "antd/dist/antd.css";
 import axios from "axios";
 import ManagerLayout from "../../../../components/student/manager-layout";
-import { Table, Input, Space, Popconfirm, message, Pagination } from "antd";
+import { Table, Input, Space, Popconfirm, message } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import AddEditStudent from "../../../../components/student/add-student";
+import { reqDeleteStudent, reqShowStudentList } from "../../../../api";
 
 export default function StudentList() {
   const columns = [
@@ -80,7 +81,12 @@ export default function StudentList() {
       ) => (
         <Space size="middle">
           {/* to edit student profile */}
-          <AddEditStudent id={id} {...record} updated={updated} setUpdated={setUpdated} />
+          <AddEditStudent
+            id={id}
+            {...record}
+            updated={updated}
+            setUpdated={setUpdated}
+          />
 
           {/* to delete student */}
           <Popconfirm
@@ -116,39 +122,25 @@ export default function StudentList() {
   const [deletedItem, setDeletedItem] = useState("");
   const [updated, setUpdated] = useState(false); //refresh数据源（传递到AddEditStudent组件）
 
-
-
-  // get and show students list
   useEffect(() => {
     setLoading(true);
-    const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
-
     // 如果有searchValue
     let path = `page=${page}&limit=${pageSize}`;
     if (searchValue) {
       path = `query=${searchValue}&page=${page}&limit=${pageSize}`;
     }
-    axios
-      // 再看看API请求的资料
-      .get(`http://cms.chtoma.com/api/students?${path}`, {
-        headers: { Authorization: `Bearer ${userToken}` },
-      })
-      .then(function (response) {
-        const { students } = response.data.data;
-        const { total } = response.data.data;
-        console.log(total);
-        if (students) {
-          setTotal(total);
-          setStudentProfile(students);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-    // # 每次点击分页都需要重新向后台请求数据 ( page等改变，重新渲染一次 )
+    // fetch students list
+    async function fetchData() {
+      const res = await reqShowStudentList(page, pageSize);
+      const { students } = res.data.data;
+      const { total } = res.data.data;
+      if (students) {
+        setTotal(total);
+        setStudentProfile(students);
+      }
+    }
+    fetchData();
+    setLoading(false);
   }, [page, pageSize, searchValue, deletedItem, updated]);
 
   // Search student
@@ -162,22 +154,12 @@ export default function StudentList() {
     [searchValue, studentProfile]
   );
 
-  // handle delete student action
-  const confirm = (record: any) => {
+  // delete student 
+  const confirm = async (record: any) => {
     const id: string = record.id;
-    const base = "http://cms.chtoma.com/api";
-    const userToken = JSON.parse(localStorage.getItem("cms") as string).token;
-    axios
-      .delete(`${base}/students/${id}`, {
-        headers: { Authorization: `Bearer ${userToken}` },
-      })
-      .then((res) => {
-        message.success("Delete Successfully");
-        setDeletedItem(id);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const result = await reqDeleteStudent(id);
+    setDeletedItem(id);
+    message.success("Delete Successfully");
   };
 
   return (
@@ -191,7 +173,7 @@ export default function StudentList() {
             style={{ width: "30%" }}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          <AddEditStudent  updated={updated} setUpdated={setUpdated}/>
+          <AddEditStudent updated={updated} setUpdated={setUpdated} />
         </div>
 
         <Table
