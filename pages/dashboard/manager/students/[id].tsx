@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { Card, Col, Row, Tabs, Tag } from "antd";
+import { Card, Col, Row, Table, Tabs, Tag } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import { UserOutlined } from "@ant-design/icons";
 import ManagerLayout from "../../../../components/student/manager-layout";
-import axios from "axios";
+import { reqGetStudentInfo } from "../../../../api";
 
-// styled-components
 export const H2 = styled.h2`
   color: #7356f1;
   margin: 20px 0px;
@@ -23,68 +21,74 @@ export const H2 = styled.h2`
  *
  */
 export default function StudentInfo(props: { id: number }) {
+  const columns = [
+    {
+      title: "No.",
+      key: "key",
+      render:(_1, _2, index: number) =>index + 1
+     
+    },
+    {
+      title: "Name",
+      key: "courses",
+      render: (obj: { name: string }) => <a>{obj.name}</a>,
+    },
+    {
+      title: "Type",
+      key: "type",
+      render: (obj: { type: string[] }) => {
+        return obj.type.map((item) => <p key={item.id}>{item.name}</p>);
+      },
+    },
+    {
+      title: "Join Time",
+      key: "createdAt",
+      render: (obj: any) => <p>{obj.createdAt}</p>,
+    },
+  ];
+
   const { TabPane } = Tabs;
   const router = useRouter();
-  const id = router.query.id; //** 1. 传递进来的参数在router.query.id中
-  // console.log("query", id);
-  // console.log("props", props); // undefined 空的 (const id = +router.query.id || props.id; 是什么意思)
-
-  const [info, setInfo] = useState([]); //** 2. 数组形式存储提取出来的学生信息
+  const [data, setData] = useState();
+  const [info, setInfo] = useState<{ label: string; value: string | number }[]>(
+    []
+  );
   const [aboutInfo, setAboutInfo] = useState([]);
-  const [interest, setInterest] = useState([]);
-  const [description, setDescription] = useState("");
-  // Right Side Title
-
+  const [courses, setCourses] = useState([]);
+  console.log(courses);
   // GET student info
   useEffect(() => {
-    const userToken = JSON.parse(localStorage.getItem("user") as string).token;
-    axios
-      .get(`http://cms.chtoma.com/api/students/${id}`, {
-        headers: { Authorization: `Bearer ${userToken}` },
-      })
-      .then((response) => {
-        const { data } = response.data;
-        const { interest } = response.data.data; // 解构赋值，放到setInterest
-        const { description } = response.data.data;
-        // console.log("data", data);
-        setInterest(interest);
-        setDescription(description);
+    (async () => {
+      const id: number = router.query.id;
+      const response = await reqGetStudentInfo(id);
+      const { data } = response.data;
 
-        //**  3. 创建数组存储获取的到的学生info，并setInfo
-        const info = [
-          { label: "Email", value: data.name },
-          { label: "Email", value: data.age },
-          { label: "Email", value: data.email },
-          { label: "Phone", value: data.phone },
-          { address: data?.address },
-        ];
+      const info = [
+        { label: "Name", value: data.name },
+        { label: "Age", value: data.age },
+        { label: "Email", value: data.email },
+        { label: "Phone", value: data.phone },
+        { address: data?.address },
+      ];
 
-        const aboutInfo = [
-          { label: "Eduction", value: data.education },
-          { label: "Area", value: data.country },
-          { label: "Gender", value: data.gender === 1 ? "Male" : "Female" },
-          {
-            label: "Member Period",
-            value: data.memberStartAt + " - " + data.memberEndAt,
-          },
-          { label: "Type", value: data.type.name },
-          { label: "Create Time", value: data.ctime },
-          { label: "Update Time", value: data.updateAt },
-        ];
-
-        setInfo(info);
-        // console.log("接收到的info", info[0].value);
-        setAboutInfo(aboutInfo);
-        // console.log("接收到的aboutInfo", aboutInfo);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [id]);
-
-  function callback(key) {
-    console.log(key);
-  }
+      const aboutInfo = [
+        { label: "Eduction", value: data.education },
+        { label: "Area", value: data.country },
+        { label: "Gender", value: data.gender === 1 ? "Male" : "Female" },
+        {
+          label: "Member Period",
+          value: data.memberStartAt + " - " + data.memberEndAt,
+        },
+        { label: "Type", value: data.type.name },
+        { label: "Create Time", value: data.ctime },
+        { label: "Update Time", value: data.updateAt },
+      ];
+      setData(data);
+      setInfo(info);
+      setAboutInfo(aboutInfo);
+      setCourses(data.courses);
+    })();
+  }, [router.query.id]);
 
   return (
     <ManagerLayout>
@@ -109,7 +113,7 @@ export default function StudentInfo(props: { id: number }) {
               {info.map((item) => (
                 <Col span={12} key={item.label} style={{ textAlign: "center" }}>
                   <b>{item.label}</b>
-                  <p>{item.value}</p>
+                  <p>{item?.value}</p>
                 </Col>
               ))}
             </Row>
@@ -117,7 +121,7 @@ export default function StudentInfo(props: { id: number }) {
               <Col span={24} style={{ textAlign: "center" }}>
                 <b>Address</b>
                 {/*  允许address为空*/}
-                <p>{info[4]?.address}</p>
+                <p></p>
               </Col>
             </Row>
           </Card>
@@ -126,7 +130,7 @@ export default function StudentInfo(props: { id: number }) {
         {/* about & courses */}
         <Col span={12}>
           <Card style={{ width: "100%" }}>
-            <Tabs defaultActiveKey="1" onChange={callback}>
+            <Tabs defaultActiveKey="1">
               <TabPane tab="About" key="1">
                 <H2>Information</H2>
                 <Row gutter={[6, 16]}>
@@ -135,28 +139,31 @@ export default function StudentInfo(props: { id: number }) {
                       <strong style={{ width: 150, display: "inline-block" }}>
                         {item.label} :
                       </strong>
-                      <span>{item.value}</span>
+                      <span>{item?.value}</span>
                     </Col>
                   ))}
                 </Row>
 
                 <H2>Interesting</H2>
                 <Row>
-                  <Col>
-                    {interest.map((item) => {
-                      return <Tag key={item}>{item}</Tag>;
+                  {/* <Col>
+                    {data.interest.map((item: string) => {
+                      // console.log(data.interest)
+                      return (
+                        <Tag key={item} style={{ padding: "5px 10px" }}>
+                          {item}
+                        </Tag>
+                      );
                     })}
-                  </Col>
+                  </Col> */}
                 </Row>
 
                 <H2>Description</H2>
-                <Row>
-                  <Col>{description}</Col>
-                </Row>
+                <Row>{/* <Col>{data.description}</Col> */}</Row>
               </TabPane>
 
               <TabPane tab="Courses" key="2">
-                Content of Tab Pane 2
+                <Table columns={columns} dataSource={courses}></Table>
               </TabPane>
             </Tabs>
           </Card>
