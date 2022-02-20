@@ -96,3 +96,9 @@ export const reqEditStudent = ({
     { headers: { Authorization: `Bearer ${userToken}` } }
   );
 };
+
+// get student info by id
+export const reqGetStudentInfo = (id: number) => {
+  const userToken = getUserToken();
+  return ajax(`/students/${id}`, "GET", {},{ headers: { Authorization: `Bearer ${userToken}` }})
+}

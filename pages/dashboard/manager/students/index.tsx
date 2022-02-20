@@ -117,7 +117,7 @@ export default function StudentList() {
 
   useEffect(() => {
     setLoading(true);
-    async function fetchData() {
+    (async () => {
       // 如果有searchValue
       let path = `page=${page}&limit=${pageSize}`;
       if (searchValue) {
@@ -131,8 +131,7 @@ export default function StudentList() {
         setTotal(total);
         setStudents(students);
       }
-    }
-    fetchData();
+    })();
     setLoading(false);
   }, [page, pageSize, searchValue, deletedItem, updated]);
 
