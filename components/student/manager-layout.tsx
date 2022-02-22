@@ -19,17 +19,46 @@ import { removeUser } from "../../utils/storageUtils";
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
-export default function ManagerLayout({ children }: any) {
+interface LayoutProps { 
+  children:React.ReactNode;
+}
+
+
+export default function ManagerLayout( {children}: LayoutProps){
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const toggle = () => setCollapsed(!collapsed);
+  const pathname = router.pathname;
+  const pathsplit: string[] = pathname.split('/');
+  const paths = pathsplit.pop()
+  const routes = routesMaker(pathsplit);
 
+  
   // sign out
   const onLogout = () => {
     const res = reqSignOut();
     removeUser();
     router.push("/sign-in");
   };
+
+  function routesMaker(pathsplit: string[]) {
+    let routes = [
+      {
+        path: 'index',
+        breadcrumbName: 'overview',
+      },
+    ];
+    for (let v of pathsplit) {
+      const pathInfo = {
+        path: v,
+        breadcrumbName: v,
+      };
+      if (v !== '') routes.push(pathInfo);
+    }
+    return routes;
+  }
+  
+
 
   return (
     <div>
@@ -50,8 +79,9 @@ export default function ManagerLayout({ children }: any) {
           <Menu
             theme="dark"
             mode="inline"
-            selectedKeys={['1']}
-            defaultOpenKeys={['sub1']}
+            defaultSelectedKeys={['manager']}
+            selectedKeys={[paths as string]}
+            defaultOpenKeys={[pathsplit[3]]}
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0" }}
           >
@@ -70,40 +100,40 @@ export default function ManagerLayout({ children }: any) {
               </Link>
             </div>
 
-            <Menu.Item key="1" icon={<UserOutlined />}>
+            <Menu.Item key="manager" icon={<UserOutlined />}>
               <Link href="/dashboard/manager" passHref>
                 <a>Overview</a>
               </Link>
             </Menu.Item>
 
-            <SubMenu key="sub1" icon={<MailOutlined />} title="Student">
-              <Menu.Item key="2">
-                <Link href="/dashboard/manager/students" passHref>
+            <SubMenu key="students" icon={<MailOutlined />} title="Student">
+              <Menu.Item key="student-list">
+                <Link href="/dashboard/manager/students/student-list" passHref>
                   <a>Student List</a>
                 </Link>
               </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="sub2" icon={<MailOutlined />} title="Teacher">
-              <Menu.Item key="3">
-                <Link href="/dashboard/manager/teacher">Teacher List</Link>
+            <SubMenu key="teacher" icon={<MailOutlined />} title="Teacher">
+              <Menu.Item key="teacher-list">
+                <Link href="/dashboard/manager/teacher/teacher-list">Teacher List</Link>
               </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="sbu3" icon={<MailOutlined />} title="Course">
-              <Menu.Item key="4">
-                <Link href="">All Courses</Link>
+            <SubMenu key="courses" icon={<MailOutlined />} title="Course">
+              <Menu.Item key="all-courses">
+                <Link href="/dashboard/manager/courses/all-courses">All Courses</Link>
               </Menu.Item>
-              <Menu.Item key="5">
-                <Link href="">Add Course</Link>
+              <Menu.Item key="add-course">
+                <Link href="/dashboard/manager/courses/add-course">Add Course</Link>
               </Menu.Item>
-              <Menu.Item key="6">
-                <Link href="">Edit Course</Link>
+              <Menu.Item key="edit-course">
+                <Link href="/dashboard/manager/courses/edit-course">Edit Course</Link>
               </Menu.Item>
             </SubMenu>
 
-            <Menu.Item key="7" icon={<UserOutlined />}>
-              <Link href="">Message</Link>
+            <Menu.Item key="message" icon={<UserOutlined />}>
+              <Link href="/dashboard/manager/message">Message</Link>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -159,16 +189,10 @@ export default function ManagerLayout({ children }: any) {
               backgroundColor: "white",
             }}
           >
-            <Breadcrumb>
-              <Breadcrumb.Item>CSM MANAGER SYSTEM</Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <a href="">Application Center</a>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <a href="">Application List</a>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>An Application</Breadcrumb.Item>
-            </Breadcrumb>
+            <Breadcrumb  routes={routes}/>
+              
+            
+
             {children}
           </Content>
         </Layout>

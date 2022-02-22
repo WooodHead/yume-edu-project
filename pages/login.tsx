@@ -3,7 +3,6 @@ import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import signStyle from "../styles/sign.module.css";
-import axios from "axios";
 import { AES } from "crypto-js";
 import { Layout, Input, Button, Checkbox, Form, Radio } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
@@ -21,13 +20,14 @@ interface LoginFormValues {
   role: "student" | "teacher" | "manager";
 }
 
+
 export default function SignIn() {
   const router = useRouter();
      // LogIn
   const onFinish = async (values: LoginFormValues) => {
     let { password, email, role } = values;
     password = AES.encrypt(password, "cms").toString();
-    const response = await reqSignIn(email, password, role);
+    const response:any =await reqSignIn(email, password, role);
     const user = response.data.data;
     if (user) {
       saveUser(user) 

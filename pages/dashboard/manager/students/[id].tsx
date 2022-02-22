@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import { Card, Col, Row, Table, Tabs, Tag } from "antd";
+import { Card, Col, Row, Table, Tabs} from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import { UserOutlined } from "@ant-design/icons";
 import ManagerLayout from "../../../../components/student/manager-layout";
@@ -13,20 +13,14 @@ export const H2 = styled.h2`
   font-size: 24px;
 `;
 
-/*
- *    动态路由传参 + 跳转页面接收参数
- *    创建动态路由在pages文件夹下 创建接收参数页面[id].tsx
- *    参考：https://www.jianshu.com/p/7d7756c4a927
- *         https://nextjs.org/docs/api-reference/next/router#userouter
- *
- */
+
+
 export default function StudentInfo(props: { id: number }) {
   const columns = [
     {
       title: "No.",
       key: "key",
-      render:(_1, _2, index: number) =>index + 1
-     
+      render:(_1: any, _2: any, index: number) =>index + 1
     },
     {
       title: "Name",
@@ -36,8 +30,8 @@ export default function StudentInfo(props: { id: number }) {
     {
       title: "Type",
       key: "type",
-      render: (obj: { type: string[] }) => {
-        return obj.type.map((item) => <p key={item.id}>{item.name}</p>);
+      render: (obj) => {
+        return obj.type.map((item:{id:number,name:string}) => <p key={item.id}>{item.name}</p>);
       },
     },
     {
@@ -56,6 +50,7 @@ export default function StudentInfo(props: { id: number }) {
   const [aboutInfo, setAboutInfo] = useState([]);
   const [courses, setCourses] = useState([]);
   console.log(courses);
+
   // GET student info
   useEffect(() => {
     (async () => {

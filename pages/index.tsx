@@ -19,7 +19,7 @@ const Home: NextPage = () => {
       <header style={style}>
         <div>Navigation</div>
         <Link href="/sign-in">
-          <a style={{color:"red"}}>Sign In</a>
+          <a style={{color:"red"}}>Log In</a>
         </Link>       
       </header>
 
