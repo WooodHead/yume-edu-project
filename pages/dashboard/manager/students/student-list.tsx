@@ -7,19 +7,23 @@ import { formatDistanceToNow } from "date-fns";
 import AddEditStudent from "../../../../components/student/add-student";
 import { reqDeleteStudent, reqShowStudentList } from "../../../../api";
 
-export default function StudentList() {
+interface IResponse<T> {
+  code: number;
+  msg: string;
+  data: T;
+}
+
+const StudentList: React.FC = () => {
   const columns = [
     {
       title: "No.",
       key: "key",
-      render(_: unknown, _1: unknown, index: number) {
-        return index + 1;
-      },
+      render: (_: unknown, _1: unknown, index: number) => index + 1,
     },
     {
       title: "Name",
       key: "name",
-      render(obj: { name: string; id: number }, _: unknown, _1: number) {
+      render(obj: { name: string; id: number }) {
         return (
           <Link href={`/dashboard/manager/students/${obj.id}`}>
             <a>{obj.name}</a>
@@ -42,27 +46,26 @@ export default function StudentList() {
       key: "courses",
       render: (
         _: unknown,
-        obj: { courses: { name: string; courseId: number } },
+        obj: { courses: { name: string; courseId: number; map: any } },
         _1: unknown
       ): string => {
         const courses = obj.courses;
-        return courses.map((item) => {
-          return <span key={item.courseId}>{item.name}</span>;
-        });
+        return courses.map((item: {courseId: number, name: string}) => (
+          <span key={item.courseId}>{item.name}</span>
+        ));
       },
     },
     {
       key: "type",
       title: "Student Type",
-      render: (_: unknown, obj: { type: { name: string } }, _1: unknown) => {
-        return <p>{obj.type.name}</p>;
-      },
+      render: (_: unknown, obj: { type: { name: string } }, _1: unknown) => (
+        <p>{obj.type.name}</p>
+      ),
     },
-
     {
       title: "Join Time",
       key: "createdAt",
-      render: (obj: any) => {
+      render: (obj: {createdAt: string}) => {
         const result = formatDistanceToNow(new Date(obj.createdAt));
         return <p>{result}</p>;
       },
@@ -86,9 +89,7 @@ export default function StudentList() {
           {/* to delete student */}
           <Popconfirm
             title="Are you sure to delete this task?"
-            onConfirm={() => {
-              return confirm(record);
-            }}
+            onConfirm={() => confirm(record)}
             okText="Yes"
             cancelText="No"
           >
@@ -124,7 +125,7 @@ export default function StudentList() {
         path = `query=${searchValue}&page=${page}&limit=${pageSize}`;
       }
       // fetch students list
-      const res = await reqShowStudentList(page, pageSize);
+      const res:any = await reqShowStudentList(page, pageSize);
       const { students } = res.data.data;
       const { total } = res.data.data;
       if (students) {
@@ -187,4 +188,6 @@ export default function StudentList() {
       </div>
     </ManagerLayout>
   );
-}
+};
+
+export default StudentList;
