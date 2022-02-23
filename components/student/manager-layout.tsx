@@ -13,39 +13,39 @@ import {
   MailOutlined,
   BellOutlined,
 } from "@ant-design/icons";
-import { reqSignOut } from "../../api";
+import { reqSignOut } from "../../service";
 import { removeUser } from "../../utils/storageUtils";
+import { postLogout, postStudents } from "../../service/api-service";
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
-interface LayoutProps { 
-  children:React.ReactNode;
+interface LayoutProps {
+  children: React.ReactNode;
 }
 
-
-export default function ManagerLayout( {children}: LayoutProps){
+export default function ManagerLayout({ children }: LayoutProps) {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const toggle = () => setCollapsed(!collapsed);
   const pathname = router.pathname;
-  const pathsplit: string[] = pathname.split('/');
-  const paths = pathsplit.pop()
+  const pathsplit: string[] = pathname.split("/");
+  const paths = pathsplit.pop();
   const routes = routesMaker(pathsplit);
 
-  
-  // sign out
+  // Logout
   const onLogout = () => {
-    const res = reqSignOut();
-    removeUser();
-    router.push("/sign-in");
+    postLogout().then(() => {
+      removeUser();
+      router.push("/login");
+    });
   };
 
   function routesMaker(pathsplit: string[]) {
     let routes = [
       {
-        path: 'index',
-        breadcrumbName: 'overview',
+        path: "index",
+        breadcrumbName: "overview",
       },
     ];
     for (let v of pathsplit) {
@@ -53,12 +53,10 @@ export default function ManagerLayout( {children}: LayoutProps){
         path: v,
         breadcrumbName: v,
       };
-      if (v !== '') routes.push(pathInfo);
+      if (v !== "") routes.push(pathInfo);
     }
     return routes;
   }
-  
-
 
   return (
     <div>
@@ -79,7 +77,7 @@ export default function ManagerLayout( {children}: LayoutProps){
           <Menu
             theme="dark"
             mode="inline"
-            defaultSelectedKeys={['manager']}
+            defaultSelectedKeys={["manager"]}
             selectedKeys={[paths as string]}
             defaultOpenKeys={[pathsplit[3]]}
             inlineCollapsed={collapsed}
@@ -116,19 +114,27 @@ export default function ManagerLayout( {children}: LayoutProps){
 
             <SubMenu key="teacher" icon={<MailOutlined />} title="Teacher">
               <Menu.Item key="teacher-list">
-                <Link href="/dashboard/manager/teacher/teacher-list">Teacher List</Link>
+                <Link href="/dashboard/manager/teacher/teacher-list">
+                  Teacher List
+                </Link>
               </Menu.Item>
             </SubMenu>
 
             <SubMenu key="courses" icon={<MailOutlined />} title="Course">
               <Menu.Item key="all-courses">
-                <Link href="/dashboard/manager/courses/all-courses">All Courses</Link>
+                <Link href="/dashboard/manager/courses/all-courses">
+                  All Courses
+                </Link>
               </Menu.Item>
               <Menu.Item key="add-course">
-                <Link href="/dashboard/manager/courses/add-course">Add Course</Link>
+                <Link href="/dashboard/manager/courses/add-course">
+                  Add Course
+                </Link>
               </Menu.Item>
               <Menu.Item key="edit-course">
-                <Link href="/dashboard/manager/courses/edit-course">Edit Course</Link>
+                <Link href="/dashboard/manager/courses/edit-course">
+                  Edit Course
+                </Link>
               </Menu.Item>
             </SubMenu>
 
@@ -189,9 +195,7 @@ export default function ManagerLayout( {children}: LayoutProps){
               backgroundColor: "white",
             }}
           >
-            <Breadcrumb  routes={routes}/>
-              
-            
+            <Breadcrumb routes={routes} />
 
             {children}
           </Content>

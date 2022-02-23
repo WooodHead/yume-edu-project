@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, Select, message } from "antd";
-import { reqAddStudent, reqEditStudent } from "../../api";
+import { reqAddStudent, reqEditStudent } from "../../service";
+import { postStudents, putStudents } from "../../service/api-service";
 
 // layout
 const formItemLayout = {
@@ -26,25 +27,20 @@ export default function AddEditStudent(props: EditStudentValue): JSX.Element {
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
 
-  const onFinish = async (values: EditStudentValue) => {
-    const { name, email, country, type } = values;
+  const onFinish = (values: Record<string, string | number>) => {
     if (!id) {
-      // add a student
-      const response = await reqAddStudent({
-        name,
-        country,
-        email,
-        type,
+      // Add a student
+      postStudents(values).then((res) => {
+        setUpdated(!updated); //refresh数据源
+        message.success("Add successful");
       });
-      setUpdated(!updated); //refresh数据源
-      message.success("Add successful");
     } else {
-      // edit an existing student
-      const response = await reqEditStudent({ id, name, country, email, type });
-      setUpdated(!updated);
+      // Edit a student
+      putStudents({id, ...values}).then((res) => {
+        setUpdated(!updated);
       message.success("Edit successful");
+    })
     }
-
     setVisible(false);
   };
 

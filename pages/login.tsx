@@ -8,8 +8,9 @@ import { Layout, Input, Button, Checkbox, Form, Radio } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import { Typography } from "antd";
-import { reqSignIn } from "../api";
+import { reqSignIn } from "../service";
 import { saveUser } from "../utils/storageUtils";
+import { postLogin } from "../service/api-service";
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -27,12 +28,13 @@ export default function SignIn() {
   const onFinish = async (values: LoginFormValues) => {
     let { password, email, role } = values;
     password = AES.encrypt(password, "cms").toString();
-    const response:any =await reqSignIn(email, password, role);
-    const user = response.data.data;
-    if (user) {
-      saveUser(user) 
-      router.push(`dashboard/${values.role}`);
-    }
+    postLogin({password, email, role}).then((res) => {
+      const user = res;
+      if (user) {
+        saveUser(user) 
+        router.push(`dashboard/${values.role}`);
+      }
+    })
   };
 
   return (
