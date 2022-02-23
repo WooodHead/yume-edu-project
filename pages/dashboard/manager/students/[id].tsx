@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import { Card, Col, Row, Table, Tabs} from "antd";
+import { Card, Col, Row, Table, Tabs, Tag } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import { UserOutlined } from "@ant-design/icons";
 import ManagerLayout from "../../../../components/student/manager-layout";
-import { reqGetStudentInfo } from "../../../../api";
+import { getStudentById } from "../../../../service/api-service";
 
 export const H2 = styled.h2`
   color: #7356f1;
@@ -13,14 +13,12 @@ export const H2 = styled.h2`
   font-size: 24px;
 `;
 
-
-
 export default function StudentInfo(props: { id: number }) {
   const columns = [
     {
       title: "No.",
       key: "key",
-      render:(_1: any, _2: any, index: number) =>index + 1
+      render: (_1: any, _2: any, index: number) => index + 1,
     },
     {
       title: "Name",
@@ -31,7 +29,9 @@ export default function StudentInfo(props: { id: number }) {
       title: "Type",
       key: "type",
       render: (obj) => {
-        return obj.type.map((item:{id:number,name:string}) => <p key={item.id}>{item.name}</p>);
+        return obj.type.map((item: { id: number; name: string }) => (
+          <p key={item.id}>{item.name}</p>
+        ));
       },
     },
     {
@@ -53,11 +53,9 @@ export default function StudentInfo(props: { id: number }) {
 
   // GET student info
   useEffect(() => {
-    (async () => {
-      const id: number = router.query.id;
-      const response = await reqGetStudentInfo(id);
-      const { data } = response.data;
-
+    const id = router.query.id;
+    getStudentById(id).then((res) => {
+      const {data} = res;
       const info = [
         { label: "Name", value: data.name },
         { label: "Age", value: data.age },
@@ -66,23 +64,24 @@ export default function StudentInfo(props: { id: number }) {
         { address: data?.address },
       ];
 
-      const aboutInfo = [
-        { label: "Eduction", value: data.education },
-        { label: "Area", value: data.country },
-        { label: "Gender", value: data.gender === 1 ? "Male" : "Female" },
-        {
-          label: "Member Period",
-          value: data.memberStartAt + " - " + data.memberEndAt,
-        },
-        { label: "Type", value: data.type.name },
-        { label: "Create Time", value: data.ctime },
-        { label: "Update Time", value: data.updateAt },
-      ];
-      setData(data);
+       const aboutInfo = [
+      { label: "Eduction", value: data.education },
+      { label: "Area", value: data.country },
+      { label: "Gender", value: data.gender === 1 ? "Male" : "Female" },
+      {
+        label: "Member Period",
+        value: data.memberStartAt + " - " + data.memberEndAt,
+      },
+      { label: "Type", value: data.type.name },
+      { label: "Create Time", value: data.ctime },
+      { label: "Update Time", value: data.updateAt },
+    ];
       setInfo(info);
       setAboutInfo(aboutInfo);
       setCourses(data.courses);
-    })();
+      setData(data);
+    });
+   
   }, [router.query.id]);
 
   return (
@@ -141,8 +140,8 @@ export default function StudentInfo(props: { id: number }) {
 
                 <H2>Interesting</H2>
                 <Row>
-                  {/* <Col>
-                    {data.interest.map((item: string) => {
+                  <Col>
+                    {data?.interest.map((item: string) => {
                       // console.log(data.interest)
                       return (
                         <Tag key={item} style={{ padding: "5px 10px" }}>
@@ -150,11 +149,11 @@ export default function StudentInfo(props: { id: number }) {
                         </Tag>
                       );
                     })}
-                  </Col> */}
+                  </Col>
                 </Row>
 
                 <H2>Description</H2>
-                <Row>{/* <Col>{data.description}</Col> */}</Row>
+                <Row><Col>{data?.description}</Col></Row>
               </TabPane>
 
               <TabPane tab="Courses" key="2">
