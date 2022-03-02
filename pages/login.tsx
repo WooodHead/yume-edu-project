@@ -8,9 +8,8 @@ import { Layout, Input, Button, Checkbox, Form, Radio } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import { Typography } from "antd";
-import { reqSignIn } from "../service";
-import { saveUser } from "../utils/storageUtils";
-import { postLogin } from "../service/api-service";
+import { saveUser } from "../lib/utils/storageUtils";
+import { postLogin } from "../pages/api/api-service";
 
 const { Title } = Typography;
 const { Content } = Layout;

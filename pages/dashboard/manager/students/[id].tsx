@@ -5,7 +5,7 @@ import { Card, Col, Row, Table, Tabs, Tag } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import { UserOutlined } from "@ant-design/icons";
 import ManagerLayout from "../../../../components/student/manager-layout";
-import { getStudentById } from "../../../../service/api-service";
+import { getStudentById } from  "../../../api/api-service";;
 
 export const H2 = styled.h2`
   color: #7356f1;
@@ -30,7 +30,7 @@ export default function StudentInfo(props: { id: number }) {
       key: "type",
       render: (obj) => {
         return obj.type.map((item: { id: number; name: string }) => (
-          <p key={item.id}>{item.name}</p>
+          <p key={Math.random()}>{item.name}</p>
         ));
       },
     },
@@ -49,13 +49,12 @@ export default function StudentInfo(props: { id: number }) {
   );
   const [aboutInfo, setAboutInfo] = useState([]);
   const [courses, setCourses] = useState([]);
-  console.log(courses);
 
   // GET student info
   useEffect(() => {
     const id = router.query.id;
     getStudentById(id).then((res) => {
-      const {data} = res;
+    const {data} = res;
       const info = [
         { label: "Name", value: data.name },
         { label: "Age", value: data.age },

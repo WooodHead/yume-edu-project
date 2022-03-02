@@ -10,28 +10,58 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
-  MailOutlined,
   BellOutlined,
 } from "@ant-design/icons";
-import { reqSignOut } from "../../service";
-import { removeUser } from "../../utils/storageUtils";
-import { postLogout, postStudents } from "../../service/api-service";
+import { removeUser } from "../../lib/utils/storageUtils";
+import { postLogout } from  "../../pages/api/api-service";
+import { generateKey } from '../../lib/utils/side-nav';
+import { routes, SideNav } from '../../lib/routes';
 
 const { Header, Sider, Content } = Layout;
-const { SubMenu } = Menu;
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
+
+function renderMenuItems(data: SideNav[], parent = ''){
+  return data.map((item, index) => {
+    const key = generateKey(item, index);
+
+    if (item.subNav && !!item.subNav.length) {
+      return (
+        <Menu.SubMenu key={key} title={item.label} icon={item.icon}>
+          {renderMenuItems(item.subNav, item.path.join('/'))}
+        </Menu.SubMenu>
+      );
+    } else {
+      return item.hide ? null : (
+        <Menu.Item key={key} title={item.label} icon={item.icon}>
+          {!!item.path.length || item.label.toLocaleLowerCase() === 'overview' ? (
+            <Link
+              href={['/dashboard', 'manager', parent, ...item.path]
+                .filter((item) => !!item)
+                .join('/')}
+              replace
+            >
+              {item.label}
+            </Link>
+          ) : (
+            item.label
+          )}
+        </Menu.Item>
+      );
+    }
+  });
+}
+
+
 export default function ManagerLayout({ children }: LayoutProps) {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const toggle = () => setCollapsed(!collapsed);
-  const pathname = router.pathname;
-  const pathsplit: string[] = pathname.split("/");
-  const paths = pathsplit.pop();
-  const routes = routesMaker(pathsplit);
+  const sideNav = routes.get('manager')
+  const menuItems = renderMenuItems(sideNav);
 
   // Logout
   const onLogout = () => {
@@ -41,22 +71,6 @@ export default function ManagerLayout({ children }: LayoutProps) {
     });
   };
 
-  function routesMaker(pathsplit: string[]) {
-    let routes = [
-      {
-        path: "index",
-        breadcrumbName: "overview",
-      },
-    ];
-    for (let v of pathsplit) {
-      const pathInfo = {
-        path: v,
-        breadcrumbName: v,
-      };
-      if (v !== "") routes.push(pathInfo);
-    }
-    return routes;
-  }
 
   return (
     <div>
@@ -78,8 +92,6 @@ export default function ManagerLayout({ children }: LayoutProps) {
             theme="dark"
             mode="inline"
             defaultSelectedKeys={["manager"]}
-            selectedKeys={[paths as string]}
-            defaultOpenKeys={[pathsplit[3]]}
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0" }}
           >
@@ -98,49 +110,8 @@ export default function ManagerLayout({ children }: LayoutProps) {
               </Link>
             </div>
 
-            <Menu.Item key="manager" icon={<UserOutlined />}>
-              <Link href="/dashboard/manager" passHref>
-                <a>Overview</a>
-              </Link>
-            </Menu.Item>
+            {menuItems}
 
-            <SubMenu key="students" icon={<MailOutlined />} title="Student">
-              <Menu.Item key="student-list">
-                <Link href="/dashboard/manager/students/student-list" passHref>
-                  <a>Student List</a>
-                </Link>
-              </Menu.Item>
-            </SubMenu>
-
-            <SubMenu key="teacher" icon={<MailOutlined />} title="Teacher">
-              <Menu.Item key="teacher-list">
-                <Link href="/dashboard/manager/teacher/teacher-list">
-                  Teacher List
-                </Link>
-              </Menu.Item>
-            </SubMenu>
-
-            <SubMenu key="courses" icon={<MailOutlined />} title="Course">
-              <Menu.Item key="all-courses">
-                <Link href="/dashboard/manager/courses/all-courses">
-                  All Courses
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="add-course">
-                <Link href="/dashboard/manager/courses/add-course">
-                  Add Course
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="edit-course">
-                <Link href="/dashboard/manager/courses/edit-course">
-                  Edit Course
-                </Link>
-              </Menu.Item>
-            </SubMenu>
-
-            <Menu.Item key="message" icon={<UserOutlined />}>
-              <Link href="/dashboard/manager/message">Message</Link>
-            </Menu.Item>
           </Menu>
         </Sider>
 
@@ -195,7 +166,7 @@ export default function ManagerLayout({ children }: LayoutProps) {
               backgroundColor: "white",
             }}
           >
-            <Breadcrumb routes={routes} />
+            {/* <Breadcrumb routes={routes} /> */}
 
             {children}
           </Content>

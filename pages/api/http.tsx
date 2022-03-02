@@ -4,7 +4,7 @@
 */
 
 import axios from "axios";
-import { getUserToken } from "../utils/storageUtils";
+import { getUserToken } from "../../lib/utils/storageUtils";
 
 const BASE_URL = "http://cms.chtoma.com/api";
 
@@ -31,21 +31,15 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-
 export function httpPost(path: string, data?: Record<string, string | number>) {
   const url = `${BASE_URL}/${path}`;
-
-  return axiosInstance
-    .post(url, data)
-    .then((response) => response.data);
+  return axiosInstance.post(url, data).then((response) => response.data);
 }
 
 export function httpPut(path: string, data: Record<string, string | number>) {
   const url = `${BASE_URL}/${path}`;
 
-  return axiosInstance
-    .put(url, data)
-    .then((response) => response.data);
+  return axiosInstance.put(url, data).then((response) => response.data);
 }
 
 export function httpGet(path: string, params: Record<string, string | number>) {
@@ -61,19 +55,7 @@ export function httpGet(path: string, params: Record<string, string | number>) {
     .then((response) => response.data);
 }
 
-// get student info by id
-export function httpGetId(path: string) {
-  const url = `${BASE_URL}/${path}`;
-  return axiosInstance
-    .get(url)
-    .then((response) => response);
-}
-
-// delete student
 export function httpDelete(path: string) {
   const url = `${BASE_URL}/${path}`;
-  return axiosInstance
-    .delete(url)
-    .then((response) => response);
+  return axiosInstance.delete(url).then((response) => response);
 }
-

@@ -5,8 +5,7 @@ import ManagerLayout from "../../../../components/student/manager-layout";
 import { Table, Input, Space, Popconfirm, message, Button } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import AddEditStudent from "../../../../components/student/add-student";
-import { reqDeleteStudent } from "../../../../service";
-import { deleteStudentById, getStudents } from "../../../../service/api-service";
+import { deleteStudentById, getStudents } from "../../../api/api-service";
 
 const StudentList: React.FC = () => {
   const columns = [
@@ -46,7 +45,7 @@ const StudentList: React.FC = () => {
       ): string => {
         const courses = obj.courses;
         return courses.map((item: { courseId: number; name: string }) => (
-          <span key={item.courseId}>{item.name}</span>
+          <span key={Math.random()}>{item.name}</span>
         ));
       },
     },
