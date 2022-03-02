@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, Select, message } from "antd";
-import { reqAddStudent, reqEditStudent } from "../../service";
-import { postStudents, putStudents } from "../../service/api-service";
+import { postStudents, putStudents } from "../../pages/api/api-service";
 
 // layout
 const formItemLayout = {
