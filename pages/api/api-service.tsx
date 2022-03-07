@@ -61,3 +61,12 @@ export function deleteStudentById(id: GetStudentReq) {
     .then((res) => res.data)
     .catch((err) => message.error("Delete students failed"));
 }
+
+
+// Course Lists
+export function getCourseList(req){
+  const path = 'courses';
+  return httpGet(path,req)
+  .then((res) => res.data)
+  .catch((err) => message.error("Get courses lists failed"))
+}
