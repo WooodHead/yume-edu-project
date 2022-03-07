@@ -24,30 +24,32 @@ interface LayoutProps {
 }
 
 
+
 function renderMenuItems(data: SideNav[], parent = ''){
   return data.map((item, index) => {
     const key = generateKey(item, index);
-
+    // 判断是否有subNav
     if (item.subNav && !!item.subNav.length) {
       return (
         <Menu.SubMenu key={key} title={item.label} icon={item.icon}>
-          {renderMenuItems(item.subNav, item.path.join('/'))}
+          {renderMenuItems(item.subNav, item.path.join('/'))} 
         </Menu.SubMenu>
       );
     } else {
       return item.hide ? null : (
         <Menu.Item key={key} title={item.label} icon={item.icon}>
+          
           {!!item.path.length || item.label.toLocaleLowerCase() === 'overview' ? (
             <Link
               href={['/dashboard', 'manager', parent, ...item.path]
-                .filter((item) => !!item)
+                .filter((item) => !!item) // 过滤空值
                 .join('/')}
-              replace
+              replace // 跳转路由将不会在history中push一个浏览记录，而是取代上一个浏览记录
             >
               {item.label}
             </Link>
           ) : (
-            item.label
+            item.label 
           )}
         </Menu.Item>
       );
@@ -91,9 +93,10 @@ export default function ManagerLayout({ children }: LayoutProps) {
           <Menu
             theme="dark"
             mode="inline"
-            defaultSelectedKeys={["manager"]}
+            
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0" }}
+
           >
             <div
               style={{

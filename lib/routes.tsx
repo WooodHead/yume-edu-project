@@ -13,7 +13,6 @@ import {
 } from "@ant-design/icons";
 import React from "react";
 
-
 /**
  * router path
  */
@@ -25,6 +24,9 @@ export enum RoutePath {
   addCourse = "add-course",
   editCourse = "edit-course",
   message = "message",
+  own = 'own',
+  schedule = 'schedule',
+  profile = 'profile',
 }
 
 export interface SideNav {
@@ -84,14 +86,38 @@ const overview: SideNav = {
   icon: <DashboardOutlined />,
 };
 
-
-
 const messages: SideNav = {
   path: [RoutePath.message],
   label: "Message",
   icon: <MessageOutlined />,
 };
 
+const studentCourses: SideNav = {
+  path: [RoutePath.courses],
+  label: "Course",
+  icon: <ReadOutlined />,
+  hideLinkInBreadcrumb: true,
+  subNav: [
+    { path: [""], label: "All Courses", icon: <ProjectOutlined /> },
+    { path: [RoutePath.own], label: "My Courses", icon: <FileAddOutlined /> },
+  ],
+};
+
+const classSchedule: SideNav = {
+  path: [RoutePath.schedule],
+  label: "Class Schedule",
+  icon: <CalendarOutlined />,
+};
+
+const profile: SideNav = {
+  path: [RoutePath.profile],
+  label: "Profile",
+  hide: true,
+  icon: <ProfileOutlined />,
+};
+
 export const routes = new Map([
   ["manager", [overview, students, teachers, courses, messages]],
+//   ["teacher", [overview, classSchedule, students, courses, profile, messages]],
+//   ["student", [overview, studentCourses, classSchedule, profile, messages]],
 ]);
