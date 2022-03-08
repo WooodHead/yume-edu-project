@@ -5,6 +5,7 @@ import CourseCard from "../../../../components/course/course-card";
 import { getCourseList } from "../../../api/api-service";
 import { BackTop, Divider, List, Skeleton } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { ICourseDetails } from "../../../../lib/model/course";
 
 interface ICourse {
   [key: string]: string | number;
@@ -27,15 +28,15 @@ export default function AllCourses() {
       (res) => {
         const { courses } = res;
 
-        if ( courses) {
-          setTimeout(()=>{
+        if (courses) {
+          setTimeout(() => {
             // to concat a new courseList
             const newCourses = courseList.concat(courses);
             setCourseList(newCourses);
-            console.log("new",newCourses)
-          }, 1500)        
-        }else {
-          setHasMore(false)
+            console.log("new", newCourses);
+          }, 1500);
+        } else {
+          setHasMore(false);
         }
       }
     );
@@ -47,7 +48,7 @@ export default function AllCourses() {
     <ManagerLayout>
       <InfiniteScroll
         dataLength={courseList.length}
-        next={() => setPaginator({ ...paginator, page: paginator.page + 1})}
+        next={() => setPaginator({ ...paginator, page: paginator.page + 1 })}
         hasMore={hasMore}
         loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
         endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
@@ -56,23 +57,14 @@ export default function AllCourses() {
         <List
           grid={{ gutter: 16, column: 4 }}
           dataSource={courseList}
-          renderItem={(course: ICourse) => (
+          renderItem={(course: ICourseDetails) => (
             <List.Item>
-              <CourseCard
-                id={course.id}
-                image={course.cover}
-                name={course.name}
-                duration={course.duration}
-                teacher={course.teacherName}
-                studentLimit={course.maxStudents}
-                startTime={course.startTime}
-                star={course.star}
-              />
+              <CourseCard {...course} />
             </List.Item>
           )}
         />
       </InfiniteScroll>
-      <BackTop/>
+      <BackTop />
     </ManagerLayout>
   );
 }
