@@ -6,6 +6,8 @@ import { Table, Input, Space, Popconfirm, message, Button } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import AddEditStudent from "../../../../components/student/add-student";
 import { deleteStudentById, getStudents } from "../../../api/api-service";
+import { IStudent } from "../../../../lib/model/student";
+import { CourseShort } from "../../../../lib/model/course";
 
 const StudentList: React.FC = () => {
   const columns = [
@@ -17,10 +19,11 @@ const StudentList: React.FC = () => {
     {
       title: "Name",
       key: "name",
-      render(obj: { name: string; id: number }) {
+      render(record: IStudent) {
+        // console.log(record)
         return (
-          <Link href={`/dashboard/manager/students/${obj.id}`}>
-            <a>{obj.name}</a>
+          <Link href={`/dashboard/manager/students/${record.id}`}>
+            <a>{record.name}</a>
           </Link>
         );
       },
@@ -37,24 +40,17 @@ const StudentList: React.FC = () => {
     },
     {
       title: "Selected Curriculum",
-      key: "courses",
-      render: (
-        _: unknown,
-        obj: { courses: { name: string; courseId: number; map: any } },
-        _1: unknown
-      ): string => {
-        const courses = obj.courses;
-        return courses.map((item: { courseId: number; name: string }) => (
-          <span key={Math.random()}>{item.name}</span>
-        ));
+      dataIndex: "courses",
+      render: (courses: CourseShort[]) => {
+        return courses?.map((item) => item.name).join(", ");
       },
     },
     {
-      key: "type",
+      dataIndex: "type",
       title: "Student Type",
-      render: (_: unknown, obj: { type: { name: string } }, _1: unknown) => (
-        <p>{obj?.type?.name}</p>
-      ),
+      render: ( type: IStudent ) => {
+        return <p>{type?.name}</p>
+      }
     },
     {
       title: "Join Time",
@@ -102,7 +98,7 @@ const StudentList: React.FC = () => {
   const [page, setPage] = useState(1);
   const [deletedItem, setDeletedItem] = useState("");
   const [updated, setUpdated] = useState(false);
-    // const [paginator, setPaginator] = useState({
+  // const [paginator, setPaginator] = useState({
   //   pageSize: 10,
   //   page: 1,
   //   total: 0,
@@ -112,18 +108,18 @@ const StudentList: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     // 如果有searchValue
-      let path = `page=${page}&limit=${pageSize}`;
-      if (searchValue) {
-        path = `query=${searchValue}&page=${page}&limit=${pageSize}`;
-      }
-    getStudents({page:page, limit:pageSize}).then(res =>{
+    let path = `page=${page}&limit=${pageSize}`;
+    if (searchValue) {
+      path = `query=${searchValue}&page=${page}&limit=${pageSize}`;
+    }
+    getStudents({ page: page, limit: pageSize }).then((res) => {
       const { students } = res;
       const { total } = res;
       if (students) {
         setTotal(total);
         setStudents(students);
       }
-    })
+    });
     setLoading(false);
   }, [page, pageSize, searchValue, deletedItem, updated]);
 
@@ -141,10 +137,10 @@ const StudentList: React.FC = () => {
   // delete student
   const confirm = (record: any) => {
     const id = record.id;
-    deleteStudentById(id).then(() =>{
+    deleteStudentById(id).then(() => {
       setDeletedItem(id);
       message.success("Delete Successfully");
-    })
+    });
   };
 
   return (

@@ -1,13 +1,13 @@
 import { message } from "antd";
 import { httpDelete, httpGet, httpPost, httpPut } from "./http";
 
-interface GetStudentReq {
+interface GetReq {
   [key: string]: string | number;
 }
 
 // Login
-export function postLogin(req: GetStudentReq) {
-  const path = "login";
+const path = "login";
+export function postLogin(req: GetReq) {
   return httpPost(path, req)
     .then((res) => res.data)
     .catch((err) => message.error("login failed"));
@@ -22,7 +22,7 @@ export function postLogout() {
 }
 
 // Add a student
-export function postStudents(req: GetStudentReq) {
+export function postStudents(req: GetReq) {
   const path = "students";
   return httpPost(path, req)
     .then((res) => res.data)
@@ -30,7 +30,7 @@ export function postStudents(req: GetStudentReq) {
 }
 
 // Edit a student
-export function putStudents(req: GetStudentReq) {
+export function putStudents(req: GetReq) {
   const path = "students";
   return httpPut(path, req)
     .then((res) => res.data)
@@ -38,7 +38,7 @@ export function putStudents(req: GetStudentReq) {
 }
 
 // Show student lists
-export function getStudents(req: GetStudentReq) {
+export function getStudents(req: GetReq) {
   let path = "students";
 
   return httpGet(path, req)
@@ -47,7 +47,7 @@ export function getStudents(req: GetStudentReq) {
 }
 
 //
-export function getStudentById(req: GetStudentReq) {
+export function getStudentById(req: GetReq) {
   const path = `students/${req}`;
   return httpGet(path,{})
     .then((res) => res)
@@ -55,7 +55,7 @@ export function getStudentById(req: GetStudentReq) {
 }
 
 // Delete student
-export function deleteStudentById(id: GetStudentReq) {
+export function deleteStudentById(id: GetReq) {
   const path = `students/${id}`;
   return httpDelete(path)
     .then((res) => res.data)
@@ -64,7 +64,7 @@ export function deleteStudentById(id: GetStudentReq) {
 
 
 // Course Lists
-export function getCourseList(req){
+export function getCourseList(req:GetReq){
   const path = 'courses';
   return httpGet(path,req)
   .then((res) => res.data)
