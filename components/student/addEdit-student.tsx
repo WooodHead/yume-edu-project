@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Modal, Form, Input, Select, message } from "antd";
 import { postStudents, putStudents } from "../../pages/api/api-service";
 
+
 // layout
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -11,17 +12,16 @@ const formInputLayout = {
 };
 
 interface EditStudentValue {
-  name?: string;
+  name?:string;
   email?: string;
   country?: string;
   id?: number;
-  type?: number;
-  updated?: unknown;
+  updated?: boolean;
   setUpdated?: unknown;
 }
 
-export default function AddEditStudent(props: EditStudentValue): JSX.Element {
-  const { id, updated, setUpdated, name, email, country } = props;
+export default function AddEditStudent(props:EditStudentValue): JSX.Element {
+  const { id, name, email, country, updated, setUpdated } = props;
   const { Option } = Select;
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
@@ -46,7 +46,7 @@ export default function AddEditStudent(props: EditStudentValue): JSX.Element {
   return (
     <div>
       <Button
-        type="primary"
+        type={!!id? "link" : "primary"}
         onClick={() => {
           setVisible(true);
         }}
