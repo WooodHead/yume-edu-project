@@ -10,16 +10,10 @@ import "antd/dist/antd.css";
 import { Typography } from "antd";
 import { saveUser } from "../lib/utils/storageUtils";
 import { postLogin } from "../pages/api/api-service";
+import { LoginFormValues } from "../lib/model/login";
 
 const { Title } = Typography;
 const { Content } = Layout;
-
-interface LoginFormValues {
-  email: string;
-  password: string;
-  role: "student" | "teacher" | "manager";
-}
-
 
 export default function SignIn() {
   const router = useRouter();

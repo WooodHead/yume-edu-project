@@ -7,8 +7,7 @@ export default function ManagerHomePage() {
   return (
     <ManagerLayout>
       <Row gutter={16} style={{ margin: "30px 0" }}>
-       
-        
+      
           <Col span={8}>
             <Card title="Card title" bordered={false}>
               Card content
