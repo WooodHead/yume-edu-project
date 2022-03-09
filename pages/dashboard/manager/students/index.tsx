@@ -4,13 +4,14 @@ import "antd/dist/antd.css";
 import ManagerLayout from "../../../../components/student/manager-layout";
 import { Table, Input, Space, Popconfirm, message, Button } from "antd";
 import { formatDistanceToNow } from "date-fns";
-import AddEditStudent from "../../../../components/student/add-student";
+import AddEditStudent from "../../../../components/student/addEdit-student";
 import { deleteStudentById, getStudents } from "../../../api/api-service";
 import { IStudent } from "../../../../lib/model/student";
 import { CourseShort } from "../../../../lib/model/course";
+import {  ColumnType } from "antd/lib/table";
 
 const StudentList: React.FC = () => {
-  const columns = [
+  const columns:ColumnType<IStudent>[] = [
     {
       title: "No.",
       key: "key",
@@ -19,8 +20,14 @@ const StudentList: React.FC = () => {
     {
       title: "Name",
       key: "name",
+      sortDirections:['ascend','descend'],
+      sorter: (pre: IStudent, next: IStudent) => {
+        const preCode = pre.name.charCodeAt(0);
+        const nextCode = next.name.charCodeAt(0);
+        setUpdated(!updated)
+        return preCode > nextCode ? 1 : preCode === nextCode ? 0 : -1
+      },
       render(record: IStudent) {
-        // console.log(record)
         return (
           <Link href={`/dashboard/manager/students/${record.id}`}>
             <a>{record.name}</a>
@@ -48,45 +55,44 @@ const StudentList: React.FC = () => {
     {
       dataIndex: "type",
       title: "Student Type",
-      render: ( type: IStudent ) => {
-        return <p>{type?.name}</p>
-      }
+      render: (type: IStudent) => {
+        return <p>{type?.name}</p>;
+      },
     },
     {
       title: "Join Time",
-      key: "createdAt",
-      render: (obj: { createdAt: string }) => {
-        const result = formatDistanceToNow(new Date(obj.createdAt));
-        return <p>{result}</p>;
+      dataIndex: "createdAt",
+      render: (createdAt: string) => {
+        const result = formatDistanceToNow(new Date(createdAt));
+        return <p>{result} ago</p>;
       },
     },
     {
       title: "Action",
       key: "action",
-      render: (
-        id: number,
-        record: { name: string; country: string; email: string; type: number }
-      ) => (
-        <Space size="middle">
-          {/* to edit student profile */}
-          <AddEditStudent
-            id={id}
-            {...record}
-            updated={updated}
-            setUpdated={setUpdated}
-          />
+      render: (record: IStudent) => {
+        // console.log(record)
+        return (
+          <Space size="middle">
+            {/* to edit student profile */}
+            <AddEditStudent
+              {...record}
+              updated={updated}
+              setUpdated={setUpdated}
+            />
 
-          {/* to delete student */}
-          <Popconfirm
-            title="Are you sure to delete this task?"
-            onConfirm={() => confirm(record)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a>Delete</a>
-          </Popconfirm>
-        </Space>
-      ),
+            {/* to delete student */}
+            <Popconfirm
+              title="Are you sure to delete this task?"
+              onConfirm={() => confirm(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <a>Delete</a>
+            </Popconfirm>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -146,15 +152,21 @@ const StudentList: React.FC = () => {
   return (
     <ManagerLayout>
       <div>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: 25,
+          }}
+        >
           {/* Search by student name */}
+          <AddEditStudent updated={updated} setUpdated={setUpdated} />
           <Input
             placeholder="input search text"
             size="middle"
             style={{ width: "30%" }}
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          <AddEditStudent updated={updated} setUpdated={setUpdated} />
         </div>
 
         <Table
