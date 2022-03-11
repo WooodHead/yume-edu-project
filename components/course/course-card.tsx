@@ -1,6 +1,6 @@
 import React from "react";
 import "antd/dist/antd.css";
-import { Button, Card, Col, Row, Divider } from "antd";
+import { Card, Col, Row, Divider } from "antd";
 import { HeartFilled, UserOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import Link from "next/link";
@@ -22,12 +22,13 @@ export default function CourseCard(props: ICourseDetails) {
     maxStudents,
     startTime,
     star,
+    children,
   } = props;
 
   return (
     <Card
       key={id}
-      cover={<img src={cover} style={{ width: "100%", height: 200 }} />}
+      cover={<img src={cover} alt="cover" style={{width: '100%', height: 200}} />}
     >
       <Row gutter={[6, 16]}>
         <h3>{name}</h3>
@@ -73,11 +74,7 @@ export default function CourseCard(props: ICourseDetails) {
           <b>{maxStudents}</b>
         </Col>
       </StyledRow>
-      <Button type="primary" style={{ margin: " 5px 0" }}>
-        <Link href={`/dashboard/manager/courses/${id}`}>
-          <a>Read More</a>
-        </Link>
-      </Button>
+        {children}
     </Card>
   );
 }

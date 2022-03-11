@@ -63,7 +63,7 @@ export default function ManagerLayout({ children }: LayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const toggle = () => setCollapsed(!collapsed);
   const sideNav = routes.get('manager')
-  const menuItems = renderMenuItems(sideNav);
+  const menuItems = renderMenuItems(sideNav!);
 
   // Logout
   const onLogout = () => {

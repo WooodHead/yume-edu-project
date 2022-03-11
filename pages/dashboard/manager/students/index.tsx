@@ -118,6 +118,7 @@ const StudentList: React.FC = () => {
     if (searchValue) {
       path = `query=${searchValue}&page=${page}&limit=${pageSize}`;
     }
+
     getStudents({ page: page, limit: pageSize }).then((res) => {
       const { students } = res;
       const { total } = res;
@@ -125,8 +126,9 @@ const StudentList: React.FC = () => {
         setTotal(total);
         setStudents(students);
       }
+      setLoading(false);
     });
-    setLoading(false);
+
   }, [page, pageSize, searchValue, deletedItem, updated]);
 
   // Search student
