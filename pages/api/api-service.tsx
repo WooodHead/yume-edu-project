@@ -70,3 +70,11 @@ export function getCourseList(req:GetReq){
   .then((res) => res.data)
   .catch((err) => message.error("Get courses lists failed"))
 }
+
+// Get course details by id
+export function getCourseDetails(req:GetReq){
+  const path = `courses/detail?id=${req}`;
+  return httpGet(path,{})
+  .then((res) => res.data)
+  .catch((err) => message.error("Get courses details failed"))
+}

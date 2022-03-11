@@ -5,15 +5,16 @@ import { Card, Col, Row, Table, Tabs, Tag } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import { UserOutlined } from "@ant-design/icons";
 import ManagerLayout from "../../../../components/student/manager-layout";
-import { getStudentById } from  "../../../api/api-service";;
-
+import { getStudentById } from "../../../api/api-service";
+import { IType } from "../../../../lib/model/course";
+import { programLanguageColors } from "../../../../lib/model/config";
 export const H2 = styled.h2`
   color: #7356f1;
   margin: 20px 0px;
   font-size: 24px;
 `;
 
-export default function StudentInfo(props: { id: number }) {
+export default function StudentInfo() {
   const columns = [
     {
       title: "No.",
@@ -28,10 +29,12 @@ export default function StudentInfo(props: { id: number }) {
     {
       title: "Type",
       key: "type",
-      render: (obj) => {
-        return obj.type.map((item: { id: number; name: string }) => (
-          <p key={Math.random()}>{item.name}</p>
-        ));
+      render: (obj: { type: IType[] }) => {
+        obj.type.map((item, index) => {
+          return <Tag color={programLanguageColors[index]} key={item.id}>
+            {item.name}
+          </Tag>
+        });
       },
     },
     {
@@ -54,7 +57,7 @@ export default function StudentInfo(props: { id: number }) {
   useEffect(() => {
     const id = router.query.id;
     getStudentById(id).then((res) => {
-    const {data} = res;
+      const { data } = res;
       const info = [
         { label: "Name", value: data.name },
         { label: "Age", value: data.age },
@@ -63,24 +66,23 @@ export default function StudentInfo(props: { id: number }) {
         { address: data?.address },
       ];
 
-       const aboutInfo = [
-      { label: "Eduction", value: data.education },
-      { label: "Area", value: data.country },
-      { label: "Gender", value: data.gender === 1 ? "Male" : "Female" },
-      {
-        label: "Member Period",
-        value: data.memberStartAt + " - " + data.memberEndAt,
-      },
-      { label: "Type", value: data.type.name },
-      { label: "Create Time", value: data.ctime },
-      { label: "Update Time", value: data.updateAt },
-    ];
+      const aboutInfo = [
+        { label: "Eduction", value: data.education },
+        { label: "Area", value: data.country },
+        { label: "Gender", value: data.gender === 1 ? "Male" : "Female" },
+        {
+          label: "Member Period",
+          value: data.memberStartAt + " - " + data.memberEndAt,
+        },
+        { label: "Type", value: data.type.name },
+        { label: "Create Time", value: data.ctime },
+        { label: "Update Time", value: data.updateAt },
+      ];
       setInfo(info);
       setAboutInfo(aboutInfo);
       setCourses(data.courses);
       setData(data);
     });
-   
   }, [router.query.id]);
 
   return (
@@ -152,7 +154,9 @@ export default function StudentInfo(props: { id: number }) {
                 </Row>
 
                 <H2>Description</H2>
-                <Row><Col>{data?.description}</Col></Row>
+                <Row>
+                  <Col>{data?.description}</Col>
+                </Row>
               </TabPane>
 
               <TabPane tab="Courses" key="2">
