@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import ManagerLayout from "../../../../components/student/manager-layout";
+import ManagerLayout from "../../../../components/layout";
 import { useRouter } from "next/router";
 import CourseCard from "../../../../components/course/course-card";
 import { getCourseDetails } from "../../../api/api-service";
@@ -13,6 +13,23 @@ import {
 import { Card, Col, Collapse, Row, Tag } from "antd";
 import WeekTable from "../../../../components/common/week-table";
 import { programLanguageColors } from "../../../../lib/model/config";
+import styled from "styled-components";
+
+const StyledRow = styled(Row)`
+  display: flex;
+  width: 100%; 
+  height: 70px;
+  justify-content: space-evenly;
+  border: 1px solid #f0f0f0;
+  border-top: none;
+  p {
+    margin-bottom: 0;
+  }
+  b {
+    color: #7356f1;
+    font-size: 24px;
+  }
+`;
 
 const { Panel } = Collapse;
 
@@ -37,26 +54,25 @@ export default function CourseDetails() {
     <ManagerLayout>
       <Row>
         <Col span={8}>
-          <CourseCard {...courseData}>
-            <Row style={{ display: "flex", justifyContent: "inherit" }}>
-              <Col>
-                <b>{sales.price}</b>
-                <p>Price</p>
-              </Col>
-              <Col>
-                <b>{sales.batches}</b>
-                <p>Batches</p>
-              </Col>
-              <Col>
-                <b>{sales.studentAmount}</b>
-                <p>Students</p>
-              </Col>
-              <Col>
-                <b>{sales.earnings}</b>
-                <p>Earings</p>
-              </Col>
-            </Row>
-          </CourseCard>
+          <CourseCard {...courseData}></CourseCard>
+          <StyledRow>
+            <Col style={{alignItems: "center", justifyContent: "center"}}>
+              <b>{sales.price}</b>
+              <p>Price</p>
+            </Col>
+            <Col>
+              <b>{sales.batches}</b>
+              <p>Batches</p>
+            </Col>
+            <Col>
+              <b>{sales.studentAmount}</b>
+              <p>Students</p>
+            </Col>
+            <Col>
+              <b>{sales.earnings}</b>
+              <p>Earings</p>
+            </Col>
+          </StyledRow>
         </Col>
         <Col offset={1} span={15}>
           <Card>
@@ -69,9 +85,7 @@ export default function CourseDetails() {
             <Row>{courseData?.startTime}</Row>
 
             <h3>Status</h3>
-            {
-              console.log("xx",courseData)
-            }
+            {console.log("xx", courseData)}
 
             <h3>Course Code</h3>
             <Row>{courseData?.uid}</Row>
@@ -83,7 +97,7 @@ export default function CourseDetails() {
 
             <h3>Category</h3>
             <Row>
-              {courseData?.type.map((type: IType, index: number) => {
+              {courseData?.type?.map((type: IType, index: number) => {
                 return (
                   <Tag color={programLanguageColors[index]} key={type.id}>
                     {type.name}
@@ -97,15 +111,14 @@ export default function CourseDetails() {
 
             <h3>Chapter</h3>
             <Collapse>
-              {
-                courseData?.schedule.chapters.map((obj:IChapters) => {
-                  return <Panel header={obj.name} key={obj.id} >
-                            {obj.content}
-                         </Panel>
-                })
-              }
+              {courseData?.schedule?.chapters.map((obj: IChapters) => {
+                return (
+                  <Panel header={obj.name} key={obj.id}>
+                    {obj.content}
+                  </Panel>
+                );
+              })}
             </Collapse>
-
           </Card>
         </Col>
       </Row>

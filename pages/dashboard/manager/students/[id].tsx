@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { Card, Col, Row, Table, Tabs, Tag } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import { UserOutlined } from "@ant-design/icons";
-import ManagerLayout from "../../../../components/student/manager-layout";
+import ManagerLayout from "../../../../components/layout";
 import { getStudentById } from "../../../api/api-service";
 import { IType } from "../../../../lib/model/course";
 import { programLanguageColors } from "../../../../lib/model/config";

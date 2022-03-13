@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import "antd/dist/antd.css";
-import ManagerLayout from "../../../../components/student/manager-layout";
+import ManagerLayout from "../../../../components/layout";
 import { Table, Input, Space, Popconfirm, message, Button } from "antd";
 import { formatDistanceToNow } from "date-fns";
 import AddEditStudent from "../../../../components/student/addEdit-student";

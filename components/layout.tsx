@@ -5,17 +5,16 @@ import { useRouter } from "next/router";
 import "antd/dist/antd.css";
 import { Layout, Button, Breadcrumb, Menu } from "antd";
 import Image from "next/image";
-import logo from "../../public/logo.png";
+import logo from "../public/logo.png";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
   BellOutlined,
 } from "@ant-design/icons";
-import { removeUser } from "../../lib/utils/storageUtils";
-import { postLogout } from  "../../pages/api/api-service";
-import { generateKey } from '../../lib/utils/side-nav';
-import { routes, SideNav } from '../../lib/routes';
+import { removeUser } from "../lib/utils/storageUtils";
+import { postLogout } from "../pages/api/api-service";
+import { ISideNav, menuItems } from "../lib/menu-item";
 
 const { Header, Sider, Content } = Layout;
 
@@ -23,47 +22,10 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-
-
-function renderMenuItems(data: SideNav[], parent = ''){
-  return data.map((item, index) => {
-    const key = generateKey(item, index);
-    // 判断是否有subNav
-    if (item.subNav && !!item.subNav.length) {
-      return (
-        <Menu.SubMenu key={key} title={item.label} icon={item.icon}>
-          {renderMenuItems(item.subNav, item.path.join('/'))} 
-        </Menu.SubMenu>
-      );
-    } else {
-      return item.hide ? null : (
-        <Menu.Item key={key} title={item.label} icon={item.icon}>
-          
-          {!!item.path.length || item.label.toLocaleLowerCase() === 'overview' ? (
-            <Link
-              href={['/dashboard', 'manager', parent, ...item.path]
-                .filter((item) => !!item) // 过滤空值
-                .join('/')}
-              replace // 跳转路由将不会在history中push一个浏览记录，而是取代上一个浏览记录
-            >
-              {item.label}
-            </Link>
-          ) : (
-            item.label 
-          )}
-        </Menu.Item>
-      );
-    }
-  });
-}
-
-
 export default function ManagerLayout({ children }: LayoutProps) {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const toggle = () => setCollapsed(!collapsed);
-  const sideNav = routes.get('manager')
-  const menuItems = renderMenuItems(sideNav!);
 
   // Logout
   const onLogout = () => {
@@ -72,6 +34,30 @@ export default function ManagerLayout({ children }: LayoutProps) {
       router.push("/login");
     });
   };
+
+  const renderMenuItems = (menuItems: ISideNav[]) => {
+    return menuItems.map((menu: ISideNav) => {
+      if (!(menu.subNav && menu.subNav.length)) {
+        // 没有subNav & subNav.length
+        return (
+          <Menu.Item key={menu.path} icon={<menu.icon />}>
+            <Link href={`/dashboard/manager/${menu.path}`}>{menu.label}</Link>
+          </Menu.Item>
+        );
+      } else {
+        return (
+          <Menu.SubMenu
+            title={menu.label}
+            key={menu.path}
+            icon={<menu.icon />}
+          >
+            {renderMenuItems(menu.subNav)}
+          </Menu.SubMenu>
+        );
+      }
+    });
+  };
+
 
 
   return (
@@ -93,10 +79,10 @@ export default function ManagerLayout({ children }: LayoutProps) {
           <Menu
             theme="dark"
             mode="inline"
-            
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0" }}
-
+            onClick={findMenuPath}
+            selectedKeys={defaultSelectedKeys}
           >
             <div
               style={{
@@ -113,8 +99,7 @@ export default function ManagerLayout({ children }: LayoutProps) {
               </Link>
             </div>
 
-            {menuItems}
-
+            {renderMenuItems(menuItems)}
           </Menu>
         </Sider>
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import ManagerLayout from "../../../../components/student/manager-layout";
+import ManagerLayout from "../../../../components/layout";
 import CourseCard from "../../../../components/course/course-card";
 import { getCourseList } from "../../../api/api-service";
 import { BackTop, Button, Divider, List, Skeleton, Spin } from "antd";
