@@ -8,6 +8,13 @@ export const weekDays = [
   "Saturday",
 ];
 
+export const duration = [
+  "hour",
+  "day",
+  "week",
+  "month",
+  "year",
+]
 
 export const programLanguageColors = [
   'magenta',
