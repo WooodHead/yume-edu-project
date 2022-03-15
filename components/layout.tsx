@@ -81,8 +81,8 @@ export default function ManagerLayout({ children }: LayoutProps) {
             mode="inline"
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0" }}
-            onClick={findMenuPath}
-            selectedKeys={defaultSelectedKeys}
+            // onClick={findMenuPath}
+            // selectedKeys={defaultSelectedKeys}
           >
             <div
               style={{

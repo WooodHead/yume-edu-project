@@ -4,7 +4,7 @@ import { Card, Col, Row, Divider } from "antd";
 import { HeartFilled, UserOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import Link from "next/link";
-import { ICourseDetails } from "../../lib/model/course";
+import { CourseCardProps, ICourseDetails } from "../../lib/model/course";
 
 const StyledRow = styled(Row)`
   display: flex;
@@ -12,7 +12,7 @@ const StyledRow = styled(Row)`
   margin: 10px;
 `;
 
-export default function CourseCard(props: ICourseDetails) {
+export default function CourseCard(props: CourseCardProps) {
   const {
     id,
     cover,
@@ -28,7 +28,9 @@ export default function CourseCard(props: ICourseDetails) {
   return (
     <Card
       key={id}
-      cover={<img src={cover} alt="cover" style={{width: '100%', height: 200}} />}
+      cover={
+        <img src={cover} alt="cover" style={{ width: "100%", height: 200 }} />
+      }
     >
       <Row gutter={[6, 16]}>
         <h3>{name}</h3>
@@ -74,7 +76,7 @@ export default function CourseCard(props: ICourseDetails) {
           <b>{maxStudents}</b>
         </Col>
       </StyledRow>
-        {children}
+      {children}
     </Card>
   );
 }
