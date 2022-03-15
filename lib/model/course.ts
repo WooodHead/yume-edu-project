@@ -24,6 +24,18 @@ export interface ICourseDetails {
     type: IType;
   }
 
+  export interface CourseCardProps {
+    id: number,
+    cover:string,
+    name: string,
+    duration: number,
+    teacherName: string,
+    maxStudents: number,
+    startTime: string,
+    star: number,
+    children?: ReactNode,
+  }
+
 export interface ICourseSales {
   price: number;
   batches: number;

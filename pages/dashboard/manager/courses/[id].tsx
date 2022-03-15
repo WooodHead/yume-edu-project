@@ -17,11 +17,12 @@ import styled from "styled-components";
 
 const StyledRow = styled(Row)`
   display: flex;
-  width: 100%; 
+  width: 100%;
   height: 70px;
   justify-content: space-evenly;
   border: 1px solid #f0f0f0;
   border-top: none;
+  border-right: none;
   p {
     margin-bottom: 0;
   }
@@ -30,6 +31,15 @@ const StyledRow = styled(Row)`
     font-size: 24px;
   }
 `;
+
+const StyledCol = styled(Col)`
+  text-align: center;
+  border-right: 1px solid #f0f0f0;
+`
+
+const H3 = styled.h3`
+  margin: 16px 0;
+`
 
 const { Panel } = Collapse;
 
@@ -40,13 +50,16 @@ export default function CourseDetails() {
 
   // Get course details by Id
   useEffect(() => {
-    const id = router.query.id;
+    const id = router.query.id as string | number;
+
+    if (!id) {
+      return;
+    }
+
     getCourseDetails(id).then((res) => {
       const { sales } = res;
-      if (id) {
-        setCourseData(res);
-        setSales(sales);
-      }
+      setCourseData(res);
+      setSales(sales);
     });
   }, [router.query.id]);
 
@@ -56,68 +69,63 @@ export default function CourseDetails() {
         <Col span={8}>
           <CourseCard {...courseData}></CourseCard>
           <StyledRow>
-            <Col style={{alignItems: "center", justifyContent: "center"}}>
+            <StyledCol span={6}>
               <b>{sales.price}</b>
               <p>Price</p>
-            </Col>
-            <Col>
+            </StyledCol >
+            <StyledCol span={6}>
               <b>{sales.batches}</b>
               <p>Batches</p>
-            </Col>
-            <Col>
+            </StyledCol >
+            <StyledCol span={6}>
               <b>{sales.studentAmount}</b>
               <p>Students</p>
-            </Col>
-            <Col>
+            </StyledCol >
+            <StyledCol span={6}>
               <b>{sales.earnings}</b>
               <p>Earings</p>
-            </Col>
+            </StyledCol >
           </StyledRow>
         </Col>
         <Col offset={1} span={15}>
           <Card>
-            <h2>Course Detail</h2>
+            <h2 style={{color:'#7356f1', fontSize:'24px'}}>Course Detail</h2>
 
-            <h3>Create Time</h3>
+            <H3>Create Time</H3>
             <Row>{courseData?.createdAt}</Row>
 
-            <h3>Start Time</h3>
-            <Row>{courseData?.startTime}</Row>
+            <H3>Start Time</H3>
+            <Row >{courseData?.startTime}</Row>
 
-            <h3>Status</h3>
-            {console.log("xx", courseData)}
+            <H3>Status</H3>
 
-            <h3>Course Code</h3>
+            <H3>Course Code</H3>
             <Row>{courseData?.uid}</Row>
 
-            <h3>Class Time</h3>
-            <Row>
+            <H3>Class Time</H3>
+            <Row >
               <WeekTable courseData={courseData} />
             </Row>
 
-            <h3>Category</h3>
-            <Row>
-              {courseData?.type?.map((type: IType, index: number) => {
-                return (
-                  <Tag color={programLanguageColors[index]} key={type.id}>
-                    {type.name}
-                  </Tag>
-                );
-              })}
+            <H3>Category</H3>
+            <Row style={{width: '100%'}}>
+              {courseData?.type?.map((type: IType, index: number) => (
+                <Tag color={programLanguageColors[index]} key={type.id}>
+                  {type.name}
+                </Tag>
+              ))}
             </Row>
 
-            <h3>Description</h3>
+            <H3>Description</H3>
             <Row>{courseData?.detail}</Row>
 
-            <h3>Chapter</h3>
+            <H3>Chapter</H3>
             <Collapse>
-              {courseData?.schedule?.chapters.map((obj: IChapters) => {
-                return (
-                  <Panel header={obj.name} key={obj.id}>
-                    {obj.content}
-                  </Panel>
-                );
-              })}
+              {courseData?.schedule?.chapters.map((obj: IChapters) => (
+                <Panel header={obj.name} key={obj.id}>
+                  {obj.content}
+                </Panel>
+              ))}
             </Collapse>
           </Card>
         </Col>

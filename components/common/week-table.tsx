@@ -26,5 +26,5 @@ export default function WeekTable(props: { courseData: ICourseDetails }) {
 
   const dataSource = [{}]; // 
 
-  return <Table columns={columns} dataSource={dataSource} pagination={false} />;
+  return <Table style={{width: "100%"}} columns={columns} dataSource={dataSource} pagination={false} />;
 }

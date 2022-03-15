@@ -49,7 +49,7 @@ export function getStudents(req: GetReq) {
 //
 export function getStudentById(req: GetReq) {
   const path = `students/${req}`;
-  return httpGet(path,{})
+  return httpGet(path, {})
     .then((res) => res)
     .catch((err) => message.error("Get students Id failed"));
 }
@@ -62,19 +62,41 @@ export function deleteStudentById(id: GetReq) {
     .catch((err) => message.error("Delete students failed"));
 }
 
-
 // Course Lists
-export function getCourseList(req:GetReq){
-  const path = 'courses';
-  return httpGet(path,req)
-  .then((res) => res.data)
-  .catch((err) => message.error("Get courses lists failed"))
+export function getCourseList(req: GetReq) {
+  const path = "courses";
+  return httpGet(path, req)
+    .then((res) => res.data)
+    .catch((err) => message.error("Get courses lists failed"));
 }
 
 // Get course details by id
-export function getCourseDetails(req:GetReq){
-  const path = `courses/detail?id=${req}`;
-  return httpGet(path,{})
-  .then((res) => res.data)
-  .catch((err) => message.error("Get courses details failed"))
+export function getCourseDetails(id: number | string) {
+  const path = `courses/detail?id=${id}`;
+  return httpGet(path, {})
+    .then((res) => res.data)
+    .catch((err) => message.error("Get courses details failed"));
+}
+
+// Get teacher name by value
+export function getTeacherList(value: GetReq) {
+  const path = `teachers?query=${value}`;
+  return httpGet(path, value)
+    .then((res) => res.data)
+    .catch((err) => message.error("Get teacher list failed"));
+}
+
+// Get course type
+export function getCourseType() {
+  const path = "courses/type";
+  return httpGet(path, {})
+    .then((res) => res.data)
+    .catch((err) => message.error("Get course type failed"));
+}
+
+// Get course Code
+export function getCourseCode() {
+  const path = "courses/code";
+  return httpGet(path, {}).then((res) =>res.data)
+  .catch((err) => message.error("Get course code failed"));
 }
