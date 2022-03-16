@@ -11,3 +11,16 @@ export interface IStudent {
   profileId: number;
   updatedAt: string;
 }
+
+
+export interface EditStudentValue {
+  name:string;
+  email: string;
+  country: string;
+  id?: number;
+}
+
+export interface EditStudentValueProps extends EditStudentValue {
+  updated: boolean;
+  setUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+}

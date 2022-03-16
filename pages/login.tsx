@@ -17,17 +17,17 @@ const { Content } = Layout;
 
 export default function SignIn() {
   const router = useRouter();
-     // LogIn
+  // LogIn
   const onFinish = async (values: LoginFormValues) => {
     let { password, email, role } = values;
     password = AES.encrypt(password, "cms").toString();
-    postLogin({password, email, role}).then((res) => {
+    postLogin({ password, email, role }).then((res) => {
       const user = res;
       if (user) {
-        saveUser(user) 
+        saveUser(user);
         router.push(`dashboard/${values.role}`);
       }
-    })
+    });
   };
 
   return (

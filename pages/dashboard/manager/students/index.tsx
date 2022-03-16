@@ -11,7 +11,7 @@ import { CourseShort } from "../../../../lib/model/course";
 import {  ColumnType } from "antd/lib/table";
 
 const StudentList: React.FC = () => {
-  const columns:ColumnType<IStudent>[] = [
+  const columns = [
     {
       title: "No.",
       key: "key",
@@ -162,7 +162,7 @@ const StudentList: React.FC = () => {
           }}
         >
           {/* Search by student name */}
-          <AddEditStudent updated={updated} setUpdated={setUpdated} />
+          <AddEditStudent updated={updated} setUpdated={setUpdated} name={""} email={""} country={""} />
           <Input
             placeholder="input search text"
             size="middle"

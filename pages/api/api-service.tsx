@@ -1,13 +1,14 @@
 import { message } from "antd";
+import { EditStudentValue } from "../../lib/model/student";
 import { httpDelete, httpGet, httpPost, httpPut } from "./http";
-
-interface GetReq {
-  [key: string]: string | number;
-}
 
 // Login
 const path = "login";
-export function postLogin(req: GetReq) {
+export function postLogin(req: {
+  password: string;
+  email: string;
+  role: string;
+}) {
   return httpPost(path, req)
     .then((res) => res.data)
     .catch((err) => message.error("login failed"));
@@ -22,7 +23,19 @@ export function postLogout() {
 }
 
 // Add a student
-export function postStudents(req: GetReq) {
+// export function postStudents(req: EditStudentValue) {
+//   const path = "students";
+//   return httpPost(path, req)
+//     .then((res) => res.data)
+//     .catch((err) => message.error("Add students failed"));
+// }
+
+//
+export function postStudents(req: {
+  name: string;
+  email: string;
+  country: string;
+}) {
   const path = "students";
   return httpPost(path, req)
     .then((res) => res.data)
@@ -30,7 +43,12 @@ export function postStudents(req: GetReq) {
 }
 
 // Edit a student
-export function putStudents(req: GetReq) {
+export function putStudents(req: {
+  name: string;
+  email: string;
+  country: string;
+  id: number;
+}) {
   const path = "students";
   return httpPut(path, req)
     .then((res) => res.data)
@@ -38,7 +56,7 @@ export function putStudents(req: GetReq) {
 }
 
 // Show student lists
-export function getStudents(req: GetReq) {
+export function getStudents(req: { page: number; limit: number }) {
   let path = "students";
 
   return httpGet(path, req)
@@ -47,15 +65,15 @@ export function getStudents(req: GetReq) {
 }
 
 //
-export function getStudentById(req: GetReq) {
-  const path = `students/${req}`;
+export function getStudentById(id:number | string) {
+  const path = `students/${id}`;
   return httpGet(path, {})
     .then((res) => res)
     .catch((err) => message.error("Get students Id failed"));
 }
 
 // Delete student
-export function deleteStudentById(id: GetReq) {
+export function deleteStudentById(id: number) {
   const path = `students/${id}`;
   return httpDelete(path)
     .then((res) => res.data)
@@ -63,7 +81,7 @@ export function deleteStudentById(id: GetReq) {
 }
 
 // Course Lists
-export function getCourseList(req: GetReq) {
+export function getCourseList(req: {page: number, limit: number}) {
   const path = "courses";
   return httpGet(path, req)
     .then((res) => res.data)
@@ -79,9 +97,9 @@ export function getCourseDetails(id: number | string) {
 }
 
 // Get teacher name by value
-export function getTeacherList(value: GetReq) {
+export function getTeacherList(value: string) {
   const path = `teachers?query=${value}`;
-  return httpGet(path, value)
+  return httpGet(path, {})
     .then((res) => res.data)
     .catch((err) => message.error("Get teacher list failed"));
 }
@@ -97,6 +115,7 @@ export function getCourseType() {
 // Get course Code
 export function getCourseCode() {
   const path = "courses/code";
-  return httpGet(path, {}).then((res) =>res.data)
-  .catch((err) => message.error("Get course code failed"));
+  return httpGet(path, {})
+    .then((res) => res.data)
+    .catch((err) => message.error("Get course code failed"));
 }

@@ -55,7 +55,7 @@ export default function StudentInfo() {
 
   // GET student info
   useEffect(() => {
-    const id = router.query.id;
+    const id = router.query.id as number | string;
     getStudentById(id).then((res) => {
       const { data } = res;
       const info = [

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, Select, message } from "antd";
 import { postStudents, putStudents } from "../../pages/api/api-service";
+import { EditStudentValue, EditStudentValueProps } from "../../lib/model/student";
 
 
 // layout
@@ -11,26 +12,19 @@ const formInputLayout = {
   style: { width: "80%" },
 };
 
-interface EditStudentValue {
-  name?:string;
-  email?: string;
-  country?: string;
-  id?: number;
-  updated?: boolean;
-  setUpdated?: unknown;
-}
 
-export default function AddEditStudent(props:EditStudentValue): JSX.Element {
+export default function AddEditStudent(props:EditStudentValueProps): JSX.Element {
   const { id, name, email, country, updated, setUpdated } = props;
   const { Option } = Select;
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
 
-  const onFinish = (values: Record<string, string | number>) => {
+  const onFinish = (values:EditStudentValue) => {
+    console.log("values:",values)
     if (!id) {
       // Add a student
       postStudents(values).then((res) => {
-        setUpdated(!updated); //refresh数据源
+        setUpdated(!updated);
         message.success("Add successful");
       });
     } else {
