@@ -21,21 +21,19 @@ import Dragger from "antd/lib/upload/Dragger";
 import moment from "moment";
 import { duration } from "../../lib/model/config";
 
-
 const { Option } = Select;
 
-
-
-export default function AddCourseForm(props:{current:number, setCurrent: React.Dispatch<React.SetStateAction<number>>}) {
-  
+export default function AddCourseForm(props: {
+  current: number;
+  setCurrent: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const { current, setCurrent } = props;
   const [loading, setLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState({}); // value of input
+  const [searchValue, setSearchValue] = useState(''); // value of input
   const [teacherDetails, setTeacherDetails] = useState([]);
   const [courseType, setCourseType] = useState([]);
   const [courseCode, setCourseCode] = useState();
   const [fileList, setFileList] = useState([]); // cover
-
 
   // Search Teacher
   useEffect(() => {
@@ -57,10 +55,7 @@ export default function AddCourseForm(props:{current:number, setCurrent: React.D
     getCourseType().then((res) => {
       setCourseType(res);
     });
-  }, []);
-
-  // Get course Code
-  useEffect(() => {
+    // Get course Code
     getCourseCode().then((res) => {
       setCourseCode(res);
     });
@@ -270,7 +265,11 @@ export default function AddCourseForm(props:{current:number, setCurrent: React.D
 
         <Row gutter={24} style={{ padding: "20px 0" }}>
           <Col span="8">
-            <Button type="primary" htmlType="submit" onClick={()=> setCurrent(current + 1)}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={() => setCurrent(current + 1)}
+            >
               Create Course
             </Button>
           </Col>

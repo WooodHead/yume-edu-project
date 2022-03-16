@@ -31,6 +31,7 @@ export default function AddCourses() {
       </Steps>
 
       {step[current]}
+      
     </ManagerLayout>
   );
 }

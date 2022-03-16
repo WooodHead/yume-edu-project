@@ -35,30 +35,40 @@ export default function ManagerLayout({ children }: LayoutProps) {
     });
   };
 
+  // test
+ 
+  // const url = window.location.toString()
+  // const activeKey = url.split('/').pop() 
+
+
+
   const renderMenuItems = (menuItems: ISideNav[]) => {
     return menuItems.map((menu: ISideNav) => {
       if (!(menu.subNav && menu.subNav.length)) {
         // 没有subNav & subNav.length
+
+        let a = ["/dashboard", "manager", menu.path];
+        if (!menu.path) {
+          a = ["/dashboard", "manager"];
+        }
+        const pathRoute = a.join("/");
+
         return (
-          <Menu.Item key={menu.path} icon={<menu.icon />}>
-            <Link href={`/dashboard/manager/${menu.path}`}>{menu.label}</Link>
+          <Menu.Item key={menu.key} icon={<menu.icon />}>
+            <Link href={pathRoute}>{menu.label}</Link>
+            {console.log(menu.key)}
           </Menu.Item>
         );
       } else {
         return (
-          <Menu.SubMenu
-            title={menu.label}
-            key={menu.path}
-            icon={<menu.icon />}
-          >
+          <Menu.SubMenu title={menu.label} key={menu.key} icon={<menu.icon />}>
             {renderMenuItems(menu.subNav)}
           </Menu.SubMenu>
         );
       }
     });
   };
-
-
+  
 
   return (
     <div>
@@ -81,8 +91,8 @@ export default function ManagerLayout({ children }: LayoutProps) {
             mode="inline"
             inlineCollapsed={collapsed}
             style={{ position: "sticky", top: "0" }}
-            // onClick={findMenuPath}
-            // selectedKeys={defaultSelectedKeys}
+            // defaultSelectedKeys={[activeKey]}
+            
           >
             <div
               style={{

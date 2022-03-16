@@ -14,6 +14,7 @@ import {
 
 
 export interface ISideNav {
+    key: string;
     path: string;
     label: string;
     icon?: JSX.Element;
@@ -22,58 +23,68 @@ export interface ISideNav {
 
 export const menuItems = [
   {
-    path: [""],
+    key: "manager",
+    path: "",
     label: "Overview",
     icon: DashboardOutlined,
   },
   {
-    path:["students"],
+    key: "1",
+    path:"students",
     label: "Student",
     icon: SolutionOutlined,
     subNav: [
       {
-        path:["students"],
+        key: "students",
+        path:"students",
         label: "Student List",
         icon: TeamOutlined,
       },
     ],
   },
   {
-    path:["teachers"],
+    key: "2",
+    path:"teachers",
     label: "Teacher",
     icon: DeploymentUnitOutlined,
     subNav: [
       {
-        path:["teachers"],
+        key: "teachers",
+        path:"teachers",
         label: "Teacher List",
         icon: TeamOutlined,
       },
     ],
   },
   {
-    path:["courses"],
+    key: "3",
+    path:"courses",
     label: "Course",
     icon: ReadOutlined,
     subNav: [
       {
-        path:["courses"],
+        key:"courses",
+        path:"courses",
         label: "All Courses",
         icon: ProjectOutlined,
       },
       {
-        path:["courses/add-course"],
+        key: "add-course",
+        path:"courses/add-course",
         label: "Add Course",
         icon: FileAddOutlined,
       },
       {
-        path:["courses/edit-course"],
+        key: "edit-course",
+        path:"courses/edit-course",
         label: "Edit Course",
         icon: EditOutlined,
       },
     ],
   },
   {
-    path:["message"],
+    key:"message ",
+    path:"message",
     label: "Message",
     icon: MessageOutlined,
   },

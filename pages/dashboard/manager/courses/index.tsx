@@ -28,7 +28,6 @@ export default function AllCourses() {
           // to concat a new courseList
           const newCourses = courseList.concat(courses);
           setCourseList(newCourses);
-          // console.log("new", newCourses);
         } else {
           setHasMore(false);
         }
