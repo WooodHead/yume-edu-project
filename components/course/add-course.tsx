@@ -24,7 +24,10 @@ import { duration } from "../../lib/model/config";
 
 const { Option } = Select;
 
-export default function AddCourseForm(props:{current, setCurrent}) {
+
+
+export default function AddCourseForm(props:{current:number, setCurrent: React.Dispatch<React.SetStateAction<number>>}) {
+  
   const { current, setCurrent } = props;
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState({}); // value of input
