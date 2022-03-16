@@ -21,15 +21,18 @@ import Dragger from "antd/lib/upload/Dragger";
 import moment from "moment";
 import { duration } from "../../lib/model/config";
 
+
 const { Option } = Select;
 
-export default function AddCourseForm() {
+export default function AddCourseForm(props:{current, setCurrent}) {
+  const { current, setCurrent } = props;
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState({}); // value of input
   const [teacherDetails, setTeacherDetails] = useState([]);
   const [courseType, setCourseType] = useState([]);
   const [courseCode, setCourseCode] = useState();
   const [fileList, setFileList] = useState([]); // cover
+
 
   // Search Teacher
   useEffect(() => {
@@ -121,7 +124,12 @@ export default function AddCourseForm() {
                   name="type"
                   rules={[{ required: true, message: "type is required!" }]}
                 >
-                  <Select showSearch filterOption={false}>
+                  <Select
+                    showSearch
+                    mode="multiple"
+                    allowClear
+                    filterOption={false}
+                  >
                     {courseType.map((obj: { id: string; name: string }) => {
                       return (
                         <Option key={obj.id} value={obj.name}>
@@ -137,9 +145,9 @@ export default function AddCourseForm() {
                 <Form.Item
                   label="Course Code"
                   name="courseCode"
-                  rules={[
-                    { required: true, message: "course code is required!" },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: "course code is required!" },
+                  // ]}
                 >
                   <Input
                     type="text"
@@ -196,7 +204,9 @@ export default function AddCourseForm() {
             <Form.Item
               label="Duration"
               name="duration"
-              rules={[{ required: true, message: "Duration must be greater than 0!" }]}
+              rules={[
+                { required: true, message: "Duration must be greater than 0!" },
+              ]}
             >
               <InputNumber
                 addonAfter={
@@ -220,7 +230,10 @@ export default function AddCourseForm() {
               name="description"
               rules={[{ required: true, message: "description is required!" }]}
             >
-              <Input.TextArea placeholder="Course description" style={{ minHeight: "292px" }} />
+              <Input.TextArea
+                placeholder="Course description"
+                style={{ minHeight: "292px" }}
+              />
             </Form.Item>
           </Col>
 
@@ -240,7 +253,10 @@ export default function AddCourseForm() {
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                   </p>
-                  <p style={{color: "	#808080", fontSize:"24px"}}  className="ant-upload-text">
+                  <p
+                    style={{ color: "	#808080", fontSize: "24px" }}
+                    className="ant-upload-text"
+                  >
                     Click or drag file to this area to upload
                   </p>
                 </Dragger>
@@ -251,7 +267,7 @@ export default function AddCourseForm() {
 
         <Row gutter={24} style={{ padding: "20px 0" }}>
           <Col span="8">
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" onClick={()=> setCurrent(current + 1)}>
               Create Course
             </Button>
           </Col>
