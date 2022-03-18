@@ -56,7 +56,7 @@ export default function ManagerLayout({ children }: LayoutProps) {
         return (
           <Menu.Item key={menu.key} icon={<menu.icon />}>
             <Link href={pathRoute}>{menu.label}</Link>
-            {console.log(menu.key)}
+            {/* {console.log(menu.key)} */}
           </Menu.Item>
         );
       } else {
