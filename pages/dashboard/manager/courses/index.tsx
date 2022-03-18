@@ -23,6 +23,7 @@ export default function AllCourses() {
     getCourseList({ page: paginator.page, limit: paginator.limit }).then(
       (res) => {
         const { courses } = res;
+        console.log(courses)
         setLoading(false);
         if (courses) {
           // to concat a new courseList

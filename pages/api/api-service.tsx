@@ -1,4 +1,5 @@
 import { message } from "antd";
+import { ICourseDetails } from "../../lib/model/course";
 import { EditStudentValue } from "../../lib/model/student";
 import { httpDelete, httpGet, httpPost, httpPut } from "./http";
 
@@ -118,4 +119,38 @@ export function getCourseCode() {
   return httpGet(path, {})
     .then((res) => res.data)
     .catch((err) => message.error("Get course code failed"));
+}
+
+export interface ICourse {
+  cover: string;
+  detail: string;
+  duration: number;
+  durationUnit: number;
+  maxStudents: number;
+  name: string;
+  price: number;
+  startTime: string;
+  teacherId: number;
+  uid: string;
+  type: [];
+}
+
+// Post a course 
+export function postCourse(req: { 
+  cover?: string;
+  detail: string;
+  duration: number;
+  durationUnit: number;
+  maxStudents: number;
+  name: string;
+  price: number;
+  startTime?: string;
+  teacherId: number;
+  uid: string;
+  type: [number];
+}){
+  const path = "courses"
+  return httpPost(path,req)
+  .then((res) => res.data)
+  .catch((err) => message.error("Post new course failed"));
 }

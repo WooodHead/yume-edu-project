@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
 import ManagerLayout from "../../../../components/layout";
-import { Steps } from "antd";
-import AddCourseForm from "../../../../components/course/add-course";
+import { Button, Col, Form, Input, Row, Space, Steps } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import AddCourseDetailForm from "../../../../components/course/course-detail";
+import AddCourseScheduleForm from "../../../../components/course/course-schedule";
 
 const { Step } = Steps;
 
-
-
 export default function AddCourses() {
   const [current, setCurrent] = useState(0); // current step 0, 1 , 2
-  console.log("current:",current)
+  // console.log("current:",current)
 
   const step = [
-    <AddCourseForm key="add-course" current={current} setCurrent={setCurrent} />,
-    <p key="step-two">step two</p>,
-    <p  key="step-two">step three</p>,
+    <AddCourseDetailForm key="stepOne" current={current} setCurrent={setCurrent} />,
+
+    <AddCourseScheduleForm key="stepTwo" current={current} setCurrent={setCurrent}/>,
+
+    <p key="success">step three</p>,
   ];
 
   const onChange = (e: number) => {
@@ -31,7 +33,6 @@ export default function AddCourses() {
       </Steps>
 
       {step[current]}
-      
     </ManagerLayout>
   );
 }

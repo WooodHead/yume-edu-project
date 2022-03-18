@@ -13,6 +13,7 @@ export interface ICourseDetails {
     id: number;
     duration: number;
     teacherName: string;
+    teacherId: number;
     maxStudents: number;
     startTime: string;
     star: number;
@@ -43,7 +44,6 @@ export interface ICourseSales {
   earnings: number;
 }
 export interface IType {
-  map: any;
   id: number;
   name: string;
 }
