@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+import { SetStateAction, useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -7,6 +8,7 @@ import {
   Input,
   InputNumber,
   message,
+  Modal,
   Row,
   Select,
   Spin,
@@ -17,14 +19,13 @@ import {
   getCourseCode,
   getCourseType,
   getTeacherList,
-  ICourse,
   postCourse,
 } from "../../pages/api/api-service";
 import Dragger from "antd/lib/upload/Dragger";
 import moment from "moment";
 import { durations } from "../../lib/model/config";
-import { format, getTime } from 'date-fns';
-import { IType } from "../../lib/model/course";
+import { format, getTime } from "date-fns";
+import { ICourse, IType } from "../../lib/model/course";
 
 const { Option } = Select;
 
@@ -36,18 +37,19 @@ interface ITeacher {
 export default function AddCourseDetail(props: {
   current: number;
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
+  setScheduleId: any
 }) {
   const [form] = Form.useForm();
-  const { current, setCurrent } = props;
+  const { current, setCurrent, setScheduleId } = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState(""); // value of input
   const [teacherDetails, setTeacherDetails] = useState<ITeacher[]>([]); // teacherId & name
-  const [durationUnit, setDurationUnit] = useState<number>(); // store current selected 
- 
+  const [durationUnit, setDurationUnit] = useState<number>(); // store current selected
+
   const [courseType, setCourseType] = useState<IType[]>([]);
   const [courseCode, setCourseCode] = useState();
   const [fileList, setFileList] = useState([]); // cover
-  const [value, setValue] = useState();
+  
 
   // test
   // console.log(teachers)
@@ -78,6 +80,7 @@ export default function AddCourseDetail(props: {
   // Get type
   useEffect(() => {
     getCourseType().then((res) => {
+      console.log("type of res:", typeof res);
       setCourseType(res);
     });
     // Get course Code
@@ -88,24 +91,27 @@ export default function AddCourseDetail(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onFinish = (value:any) => {
-    // console.log("value:", value);
-    const result:ICourse = {
+  const onFinish = (value: any) => {
+    console.log("value type:", typeof value.type);
+
+    const result: ICourse = {
       ...value,
       durationUnit: durationUnit,
-      // startTime: value.startTime && format(value.startTime, 'yyy-MM-dd') 
-      startTime:"2020-12-08"  // 问题：
-    }
+      startTime: "2020-12-08", // 问题：
+      // startTime: value.startTime && format(value.startTime, 'yyy-MM-dd')
+    };
     // goes to next page
     if (!!result) {
-      postCourse(result).then((res) => {
-        console.log("res:",res)
-      }).finally(() => {
-        setCurrent(current + 1);
-        message.success("success");
-      })
-
-     
+      postCourse(result)
+        .then((res) => {
+          console.log("res:", res);
+          setScheduleId(res.scheduleId);
+        })
+        .finally(() => {
+          setCurrent(current + 1);
+          message.success("success");
+        }
+        );
     }
   };
 
@@ -200,8 +206,8 @@ export default function AddCourseDetail(props: {
         <Row gutter={24} style={{ padding: "20px 0" }}>
           <Col span="8">
             <Form.Item label="Start Date" name="startTime">
-            <DatePicker
-                style={{ width: '100%' }}
+              <DatePicker
+                style={{ width: "100%" }}
                 disabledDate={(current) => {
                   const today = getTime(new Date());
                   const date = current.valueOf();
@@ -248,7 +254,12 @@ export default function AddCourseDetail(props: {
             >
               <InputNumber
                 addonAfter={
-                  <Select defaultValue="month" onSelect={(el) => setDurationUnit(el)}>
+                  <Select
+                    defaultValue="month"
+                    onSelect={(el: SetStateAction<number | string>) =>
+                      setDurationUnit(el as number)
+                    }
+                  >
                     {durations.map((el) => {
                       return (
                         <Option key={el.durationUnit} value={el.durationUnit}>
@@ -290,6 +301,15 @@ export default function AddCourseDetail(props: {
             <Form.Item label="Cover" name="cover">
               <ImgCrop rotate>
                 <Dragger
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  listType="picture-card"
+                  fileList={fileList}
+                  // showUploadList={false}
+                  maxCount={1}
+                  onChange={(file) => {
+                    console.log("url?", file)
+                    // 问题？：找不到url；status: "uploading"；跨域 'Access-Control-Allow-Origin'
+                  }}
                   style={{
                     minHeight: "292px",
                     backgroundColor: "#F0F0F0",
@@ -299,6 +319,20 @@ export default function AddCourseDetail(props: {
                     alignItems: "center",
                   }}
                 >
+                  {/* 预览 */}
+                  {/* <Modal
+                    visible={true}
+                    // title={}
+                    footer={null}
+                    // onCancel={handleCancel}
+                  >
+                    <img
+                      alt="example"
+                      style={{ width: "100%" }}
+                      src={fileList?.images}
+                    />
+                  </Modal> */}
+
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                   </p>

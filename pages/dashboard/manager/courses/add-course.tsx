@@ -10,12 +10,14 @@ const { Step } = Steps;
 
 export default function AddCourses() {
   const [current, setCurrent] = useState(0); // current step 0, 1 , 2
-  // console.log("current:",current)
+  const [scheduleId, setScheduleId] = useState(null);
+  const [courseId, setCourseId] = useState(null); // 问题
+
 
   const step = [
-    <AddCourseDetailForm key="stepOne" current={current} setCurrent={setCurrent} />,
+    <AddCourseDetailForm key="stepOne" current={current} setCurrent={setCurrent} setScheduleId={setScheduleId}/>,
 
-    <AddCourseScheduleForm key="stepTwo" current={current} setCurrent={setCurrent}/>,
+    <AddCourseScheduleForm key="stepTwo" current={current} setCurrent={setCurrent} scheduleId={scheduleId} courseId={courseId}/>,
 
     <p key="success">step three</p>,
   ];
@@ -26,7 +28,7 @@ export default function AddCourses() {
 
   return (
     <ManagerLayout>
-      <Steps type="navigation" current={current} onChange={onChange}>
+      <Steps type="navigation" current={current} onChange={onChange} >
         <Step title="Course Detail" />
         <Step title="Course Schedule" />
         <Step title="Success" />

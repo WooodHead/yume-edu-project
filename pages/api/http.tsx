@@ -31,12 +31,12 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-export function httpPost(path: string, data?: Record<string, string | number>) {
+export function httpPost(path: string, data?: Record<string, string | number >) {
   const url = `${BASE_URL}/${path}`;
   return axiosInstance.post(url, data).then((response) => response.data);
 }
 
-export function httpPut(path: string, data: Record<string, string | number>) {
+export function httpPut(path: string, data:Record<string, string | number | string[]>){
   const url = `${BASE_URL}/${path}`;
 
   return axiosInstance.put(url, data).then((response) => response.data);

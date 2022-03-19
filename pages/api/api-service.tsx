@@ -1,5 +1,5 @@
 import { message } from "antd";
-import { ICourseDetails } from "../../lib/model/course";
+import { ICourse, ICourseDetails, IScheduleReq } from "../../lib/model/course";
 import { EditStudentValue } from "../../lib/model/student";
 import { httpDelete, httpGet, httpPost, httpPut } from "./http";
 
@@ -24,24 +24,24 @@ export function postLogout() {
 }
 
 // Add a student
-// export function postStudents(req: EditStudentValue) {
-//   const path = "students";
-//   return httpPost(path, req)
-//     .then((res) => res.data)
-//     .catch((err) => message.error("Add students failed"));
-// }
-
-//
-export function postStudents(req: {
-  name: string;
-  email: string;
-  country: string;
-}) {
+export function postStudents(req: EditStudentValue) {
   const path = "students";
   return httpPost(path, req)
     .then((res) => res.data)
     .catch((err) => message.error("Add students failed"));
 }
+
+//
+// export function postStudents(req: {
+//   name: string;
+//   email: string;
+//   country: string;
+// }) {
+//   const path = "students";
+//   return httpPost(path, req)
+//     .then((res) => res.data)
+//     .catch((err) => message.error("Add students failed"));
+// }
 
 // Edit a student
 export function putStudents(req: {
@@ -66,7 +66,7 @@ export function getStudents(req: { page: number; limit: number }) {
 }
 
 //
-export function getStudentById(id:number | string) {
+export function getStudentById(id: number | string) {
   const path = `students/${id}`;
   return httpGet(path, {})
     .then((res) => res)
@@ -82,7 +82,7 @@ export function deleteStudentById(id: number) {
 }
 
 // Course Lists
-export function getCourseList(req: {page: number, limit: number}) {
+export function getCourseList(req: { page: number; limit: number }) {
   const path = "courses";
   return httpGet(path, req)
     .then((res) => res.data)
@@ -121,36 +121,16 @@ export function getCourseCode() {
     .catch((err) => message.error("Get course code failed"));
 }
 
-export interface ICourse {
-  cover: string;
-  detail: string;
-  duration: number;
-  durationUnit: number;
-  maxStudents: number;
-  name: string;
-  price: number;
-  startTime: string;
-  teacherId: number;
-  uid: string;
-  type: [];
+// Add a course
+export function postCourse(req: ICourse) {
+  const path = "courses";
+  return httpPost(path, req)
+    .then((res) => res.data)
+    .catch((err) => message.error("Post new course failed"));
 }
 
-// Post a course 
-export function postCourse(req: { 
-  cover?: string;
-  detail: string;
-  duration: number;
-  durationUnit: number;
-  maxStudents: number;
-  name: string;
-  price: number;
-  startTime?: string;
-  teacherId: number;
-  uid: string;
-  type: [number];
-}){
-  const path = "courses"
-  return httpPost(path,req)
-  .then((res) => res.data)
-  .catch((err) => message.error("Post new course failed"));
+// Edit schedule
+export function putSchedule(req: IScheduleReq) {
+  const path = "courses/schedule";
+  return httpPut(path, req);
 }
