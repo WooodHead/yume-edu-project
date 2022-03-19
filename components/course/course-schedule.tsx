@@ -14,7 +14,7 @@ export default function AddCourseScheduleForm(props: {
   current: number;
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
   scheduleId: number | null;
-  courseId: number | null;
+  courseId?: number | null;
 }) {
   const [form] = Form.useForm();
   const {current, setCurrent, scheduleId, courseId} = props;
@@ -30,6 +30,7 @@ export default function AddCourseScheduleForm(props: {
     const req:IScheduleReq = {chapters, classTime, scheduleId, courseId }
     console.log("req value:", req)
 
+    // 问题：提交不上去
     if(value){
       putSchedule(req).then((res) => console.log("update schedule res:",res) )
     }
