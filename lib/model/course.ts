@@ -50,10 +50,10 @@ export interface IType {
 
 export interface ISchedule {
   classTime: string[];
-  chapters: {name: string, content: string}[];
+  chapters: { [key:string]:string | number}[];
 }
 
-export interface IScheduleReq extends ISchedule  {
+export interface IScheduleReq extends ISchedule {
   scheduleId: number | null;
   courseId?: number | null;
 }
@@ -80,6 +80,3 @@ export interface ICourse {
   uid: string;
   type: {};
 }
-
-
-
