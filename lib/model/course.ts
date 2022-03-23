@@ -44,13 +44,14 @@ export interface ICourseSales {
   earnings: number;
 }
 export interface IType {
-  id: number;
-  name: string;
+  id?: number;
+  name?: string;
 }
 
 export interface ISchedule {
   classTime: string[];
   chapters: { [key:string]:string | number}[];
+  
 }
 
 export interface IScheduleReq extends ISchedule {
@@ -68,15 +69,16 @@ export interface IChapters {
 }
 
 export interface ICourse {
-  cover?: string;
+  cover: string;
   detail: string;
   duration: number;
   durationUnit: number;
   maxStudents: number;
   name: string;
   price: number;
-  startTime?: string;
+  startTime: string;
   teacherId: number;
   uid: string;
-  type: {};
+  type: IType;
+  [key: string]: string | number | object;
 }

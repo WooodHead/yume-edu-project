@@ -8,6 +8,7 @@ import ManagerLayout from "../../../../components/layout";
 import { getStudentById } from "../../../api/api-service";
 import { IType } from "../../../../lib/model/course";
 import { programLanguageColors } from "../../../../lib/model/config";
+
 export const H2 = styled.h2`
   color: #7356f1;
   margin: 20px 0px;

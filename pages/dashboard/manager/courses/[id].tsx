@@ -70,19 +70,19 @@ export default function CourseDetails() {
           <CourseCard {...courseData}></CourseCard>
           <StyledRow>
             <StyledCol span={6}>
-              <b>{sales.price}</b>
+              <b>{sales?.price}</b>
               <p>Price</p>
             </StyledCol >
             <StyledCol span={6}>
-              <b>{sales.batches}</b>
+              <b>{sales?.batches}</b>
               <p>Batches</p>
             </StyledCol >
             <StyledCol span={6}>
-              <b>{sales.studentAmount}</b>
+              <b>{sales?.studentAmount}</b>
               <p>Students</p>
             </StyledCol >
             <StyledCol span={6}>
-              <b>{sales.earnings}</b>
+              <b>{sales?.earnings}</b>
               <p>Earings</p>
             </StyledCol >
           </StyledRow>
@@ -121,7 +121,7 @@ export default function CourseDetails() {
 
             <H3>Chapter</H3>
             <Collapse>
-              {courseData?.schedule?.chapters.map((obj: IChapters) => (
+              {courseData?.schedule?.chapters.map((obj) => (
                 <Panel header={obj.name} key={obj.id}>
                   {obj.content}
                 </Panel>

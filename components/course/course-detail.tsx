@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { SetStateAction, useEffect, useState } from "react";
+import styled from "styled-components";
 import {
   Button,
   Col,
   DatePicker,
   Form,
+  FormInstance,
   Input,
   InputNumber,
   message,
@@ -27,6 +29,29 @@ import { durations } from "../../lib/model/config";
 import { format, getTime } from "date-fns";
 import { ICourse, IType } from "../../lib/model/course";
 
+const UploadItem = styled(Form.Item)`
+  .ant-col-8 {
+    position: relative;
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+  .ant-upload-drag-container {
+    height: 260px;
+  }
+  .ant-upload-list-picture-card-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ant-upload-list-item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover !important;
+  }
+`;
+
 const { Option } = Select;
 
 interface ITeacher {
@@ -35,24 +60,33 @@ interface ITeacher {
 }
 
 export default function AddCourseDetail(props: {
-  current: number;
-  setCurrent: React.Dispatch<React.SetStateAction<number>>;
-  setScheduleId: any
+  current?: number;
+  setCurrent?: React.Dispatch<React.SetStateAction<number>>;
+  setScheduleId?: React.Dispatch<React.SetStateAction<number>>;
+  setCourseId?: any;
+  filledForm?: any;
+  filledDetailsForm?: any;
 }) {
   const [form] = Form.useForm();
-  const { current, setCurrent, setScheduleId } = props;
+  const {
+    current,
+    setCurrent,
+    setScheduleId,
+    setCourseId,
+    filledForm,
+    filledDetailsForm,
+  } = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState(""); // value of input
   const [teacherDetails, setTeacherDetails] = useState<ITeacher[]>([]); // teacherId & name
   const [durationUnit, setDurationUnit] = useState<number>(); // store current selected
-
   const [courseType, setCourseType] = useState<IType[]>([]);
-  const [courseCode, setCourseCode] = useState();
-  const [fileList, setFileList] = useState([]); // cover
-  
+  const [courseCode, setCourseCode] = useState(null);
+  const [fileList, setFileList] = useState<any[]>([]); // cover
 
-  // test
-  // console.log(teachers)
+
+  console.log("from edit page",filledDetailsForm)
+  
 
   // Search Teacher
   useEffect(() => {
@@ -66,58 +100,78 @@ export default function AddCourseDetail(props: {
         teachers.map((obj: { id: any; name: any }) => {
           return teacherValue.push({ teacherId: obj.id, name: obj.name });
         });
-        console.log("teacherValue", teacherValue);
 
         // form.setFieldsValue({teacherId: teachers.id})
         setTeacherDetails(teacherValue);
-        console.log("teacherDetails:", teacherDetails);
 
         setLoading(false);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
-  // Get type
+   // Get course Code
   useEffect(() => {
-    getCourseType().then((res) => {
-      console.log("type of res:", typeof res);
-      setCourseType(res);
-    });
-    // Get course Code
     getCourseCode().then((res) => {
-      form.setFieldsValue({ uid: res }); // Set course Code
-      setCourseCode(res);
+      if(!filledDetailsForm?.uid){
+        form.setFieldsValue({ uid: res });
+        setCourseCode(res);
+      }    
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onFinish = (value: any) => {
-    console.log("value type:", typeof value.type);
-
     const result: ICourse = {
       ...value,
       durationUnit: durationUnit,
-      startTime: "2020-12-08", // 问题：
+      startTime: "2020-12-08",
       // startTime: value.startTime && format(value.startTime, 'yyy-MM-dd')
     };
+
     // goes to next page
     if (!!result) {
       postCourse(result)
         .then((res) => {
-          console.log("res:", res);
           setScheduleId(res.scheduleId);
+          setCourseId(res.id);
+          filledForm.setFieldsValue(res);
+
+          console.log(
+            "filledForm instance onfinish",
+            filledForm.getFieldsValue(true)
+          );
         })
         .finally(() => {
-          setCurrent(current + 1);
-          message.success("success");
-        }
-        );
+          if (current !== undefined && setCurrent !== undefined) {
+            console.log(current);
+            setCurrent(current + 1);
+            message.success("success");
+          }
+          return current;
+        });
     }
   };
 
   return (
-    <>
-      <Form form={form} layout="vertical" onFinish={onFinish}>
+    <div style={{ visibility: false ? "hidden" : "visible" }}>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={onFinish}
+        initialValues={{
+          name: filledDetailsForm.name,
+          teacherId: filledDetailsForm?.teacherName,
+          type: filledDetailsForm?.type?.map((obj: { name: string }) => obj.name),
+          uid: filledDetailsForm?.uid,
+          // startTime: filledDetailsForm?.startTime, 
+          price: filledDetailsForm?.price,
+          maxStudents: filledDetailsForm?.maxStudents,
+          duration: filledDetailsForm?.duration,
+          detail: filledDetailsForm?.detail,
+          cover: filledDetailsForm?.cover,
+        }}  
+      >
         <Row gutter={24} style={{ padding: "20px 0" }}>
           <Col span="8">
             <Form.Item
@@ -154,7 +208,7 @@ export default function AddCourseDetail(props: {
                     placeholder="search teacher"
                     onSearch={(value) => setSearchValue(value)}
                   >
-                    {teacherDetails.map((obj: ITeacher) => {
+                    {teacherDetails?.map((obj: ITeacher) => {
                       return (
                         <Option key={obj.teacherId} value={obj.teacherId}>
                           {obj.name}
@@ -176,11 +230,16 @@ export default function AddCourseDetail(props: {
                     mode="multiple"
                     allowClear
                     filterOption={false}
+                    onSearch={()=>{ 
+                      getCourseType().then((res) => {
+                        setCourseType(res);
+                      });
+                    }}
                   >
-                    {courseType.map((obj) => {
+                    {courseType?.map(({ id, name }) => {
                       return (
-                        <Option key={obj.id} value={obj.id}>
-                          {obj.name}
+                        <Option key={id} value={id}>
+                          {name}
                         </Option>
                       );
                     })}
@@ -298,41 +357,33 @@ export default function AddCourseDetail(props: {
           </Col>
 
           <Col span="8">
-            <Form.Item label="Cover" name="cover">
-              <ImgCrop rotate>
+            <UploadItem label="Cover" name="cover">
+              <ImgCrop rotate aspect={2 / 1.3}>
                 <Dragger
                   action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                   listType="picture-card"
                   fileList={fileList}
                   // showUploadList={false}
                   maxCount={1}
-                  onChange={(file) => {
-                    console.log("url?", file)
-                    // 问题？：找不到url；status: "uploading"；跨域 'Access-Control-Allow-Origin'
+                  onChange={({ file, fileList }) => {
+                    console.log(file);
+                    if (file?.response) {
+                      const { url } = file.response;
+                      return form.setFieldsValue({ cover: url });
+                    } else {
+                      return form.setFieldsValue({ cover: "" });
+                    }
+                    setFileList(fileList);
                   }}
                   style={{
                     minHeight: "292px",
-                    backgroundColor: "#F0F0F0",
+                    backgroundColor: false ? "none" : "#F0F0F0",
                     border: "2px dashed #DCDCDC",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  {/* 预览 */}
-                  {/* <Modal
-                    visible={true}
-                    // title={}
-                    footer={null}
-                    // onCancel={handleCancel}
-                  >
-                    <img
-                      alt="example"
-                      style={{ width: "100%" }}
-                      src={fileList?.images}
-                    />
-                  </Modal> */}
-
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                   </p>
@@ -344,7 +395,7 @@ export default function AddCourseDetail(props: {
                   </p>
                 </Dragger>
               </ImgCrop>
-            </Form.Item>
+            </UploadItem>
           </Col>
         </Row>
 
@@ -356,6 +407,6 @@ export default function AddCourseDetail(props: {
           </Col>
         </Row>
       </Form>
-    </>
+    </div>
   );
 }
