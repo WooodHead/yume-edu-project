@@ -66,6 +66,7 @@ export default function AddCourseDetail(props: {
   setCourseId?: any;
   filledForm?: any;
   filledDetailsForm?: any;
+  searchedForm?: any;
 }) {
   const [form] = Form.useForm();
   const {
@@ -75,6 +76,7 @@ export default function AddCourseDetail(props: {
     setCourseId,
     filledForm,
     filledDetailsForm,
+    searchedForm
   } = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState(""); // value of input
@@ -85,7 +87,7 @@ export default function AddCourseDetail(props: {
   const [fileList, setFileList] = useState<any[]>([]); // cover
 
 
-  console.log("from edit page",filledDetailsForm)
+  console.log("get value from edit page:",filledDetailsForm)
   
 
   // Search Teacher
@@ -160,7 +162,7 @@ export default function AddCourseDetail(props: {
         layout="vertical"
         onFinish={onFinish}
         initialValues={{
-          name: filledDetailsForm.name,
+          name: filledDetailsForm?.name,
           teacherId: filledDetailsForm?.teacherName,
           type: filledDetailsForm?.type?.map((obj: { name: string }) => obj.name),
           uid: filledDetailsForm?.uid,

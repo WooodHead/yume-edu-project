@@ -56,8 +56,9 @@ export default function AddCourses() {
                 // get course details 
                 getCourseByCourseId(id).then((res)=>{ 
                   searchedForm.setFieldsValue(res)
+                  
                   console.log("set 进去？",searchedForm.getFieldsValue(true))
-                  console.log(res) 
+                  
                 })
               }}
               placeholder={placeholder || "search course by category"}
@@ -78,7 +79,7 @@ export default function AddCourses() {
       <Row gutter={24} style={{ padding: "20px 12px", width: "100%" }}>
         <Tabs defaultActiveKey="courseDetail" style={{ width: "100%" }}>
           <TabPane tab="Course Detail" key="courseDetail">
-            <AddCourseDetailForm />
+            <AddCourseDetailForm filledDetailsForm={searchedForm.getFieldsValue(true)}/>
           </TabPane>
 
           <TabPane tab="Course Schedule" key="courseSchedule">
