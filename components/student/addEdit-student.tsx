@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, Select, message } from "antd";
 import { postStudents, putStudents } from "../../pages/api/api-service";
-import { EditStudentValue, EditStudentValueProps } from "../../lib/model/student";
+import { EditStudentValue } from "../../lib/model/student";
 
 
 // layout
@@ -12,6 +12,14 @@ const formInputLayout = {
   style: { width: "80%" },
 };
 
+interface EditStudentValueProps { 
+  id?: number;
+  name: string;
+  email: string;
+  country: string;
+  updated: boolean;
+  setUpdated: (value: boolean) => boolean
+}
 
 export default function AddEditStudent(props:EditStudentValueProps): JSX.Element {
   const { id, name, email, country, updated, setUpdated } = props;
@@ -19,7 +27,7 @@ export default function AddEditStudent(props:EditStudentValueProps): JSX.Element
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
 
-  const onFinish = (values:EditStudentValue) => {
+  const onFinish = (values: EditStudentValue) => {
     console.log("values:",values)
     if (!id) {
       // Add a student

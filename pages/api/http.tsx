@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
   responseType: "json",
-  timeout: 5000,
+  timeout: 50000,
 });
 
 // 添加请求拦截器
@@ -31,12 +31,12 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-export function httpPost(path: string, data?: Record<string, string | number >) {
+export function httpPost(path: string, data?:Record<string, string | number> ) {
   const url = `${BASE_URL}/${path}`;
   return axiosInstance.post(url, data).then((response) => response.data);
 }
 
-export function httpPut(path: string, data:Record<string, string | number | string[]>){
+export function httpPut(path: string, data: Record<string, string | number>){
   const url = `${BASE_URL}/${path}`;
 
   return axiosInstance.put(url, data).then((response) => response.data);

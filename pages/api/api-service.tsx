@@ -31,18 +31,6 @@ export function postStudents(req: EditStudentValue) {
     .catch((err) => message.error("Add students failed"));
 }
 
-//
-// export function postStudents(req: {
-//   name: string;
-//   email: string;
-//   country: string;
-// }) {
-//   const path = "students";
-//   return httpPost(path, req)
-//     .then((res) => res.data)
-//     .catch((err) => message.error("Add students failed"));
-// }
-
 // Edit a student
 export function putStudents(req: {
   name: string;
@@ -132,5 +120,23 @@ export function postCourse(req: ICourse) {
 // Edit schedule
 export function putSchedule(req: IScheduleReq) {
   const path = "courses/schedule";
-  return httpPut(path, req);
+  return httpPut(path, req)
+    .then((res) => res.data)
+    .catch((err) => message.error("Edit course schedule failed"));
+}
+
+// Get course details by Id
+export function getCourseByCourseId(id: number) {
+  const path = `courses/detail?id=${id}`;
+  return httpGet(path, {})
+    .then((res) => res.data)
+    .catch((err) => message.error("Get course details failed"));
+}
+
+// Get course details by uid, name, type
+export function getCourseByCourseDetails(path:string) {
+  const basePath = path;
+  return httpGet(basePath, {})
+    .then((res) => res.data)
+    .catch((err) => message.error("Get course detail failed"));
 }

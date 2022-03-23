@@ -17,10 +17,6 @@ export interface EditStudentValue {
   name:string;
   email: string;
   country: string;
-  id?: number;
+  [key: string ]: string ;
 }
 
-export interface EditStudentValueProps extends EditStudentValue {
-  updated: boolean;
-  setUpdated: React.Dispatch<React.SetStateAction<boolean>>;
-}
