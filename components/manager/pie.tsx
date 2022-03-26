@@ -1,3 +1,4 @@
+import { Col, Row } from "antd";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { CourseType } from "../../lib/model/course";
@@ -13,14 +14,16 @@ export default function PieChart(props: {
   studentType?: StudentType[];
   courseType?: CourseType[];
   gender?: any;
+
   title?: string;
 }) {
   const { studentType, courseType, gender, title } = props;
+
   const data = [studentType, courseType, gender].filter(
     (obj) => obj !== undefined
   );
 
-  console.log("newData", data);
+  console.log("data filtered:", data);
 
   const options: Highcharts.Options = {
     chart: {
@@ -31,6 +34,13 @@ export default function PieChart(props: {
     },
     title: {
       text: title,
+    },
+    subtitle: {
+      text: ` ${title?.replace("Type", "Total")} : ${data[0]?.reduce(
+        (acc: number, cur:number) => acc + cur.amount,
+        0
+      )} `,
+      align: "right",
     },
     tooltip: {
       pointFormat:
@@ -55,14 +65,18 @@ export default function PieChart(props: {
     series: [
       {
         type: "pie",
-        // data:
+        // data: [
+        //   { name: "female", y: data[0].student?.female },
+        //   { name: "male", y: data[0].student?.male },
+        //   { name: "unknown", y: data[0].student?.unknown },
+        // ],
 
-        // data[0].map(({ name, amount }) => {
-        //   return {
-        //     name: name,
-        //     y: amount,
-        //   };
-        // }),
+        data: data[0]?.map(({ name, amount }) => {
+          return {
+            name: name,
+            y: amount,
+          };
+        }),
       },
     ],
   };
@@ -71,6 +85,7 @@ export default function PieChart(props: {
     <HighchartsReact
       options={options}
       highcharts={Highcharts}
+      
     ></HighchartsReact>
   );
 }
