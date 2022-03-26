@@ -82,3 +82,8 @@ export interface ICourse {
   type: IType;
   [key: string]: string | number | object;
 }
+
+export interface CourseType {
+  name: string;
+  amount: number;
+}

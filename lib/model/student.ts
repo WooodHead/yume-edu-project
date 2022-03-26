@@ -20,3 +20,7 @@ export interface EditStudentValue {
   [key: string ]: string ;
 }
 
+export interface StudentType {
+  name: string;
+  amount: number;
+}

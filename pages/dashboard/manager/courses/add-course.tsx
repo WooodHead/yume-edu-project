@@ -18,6 +18,7 @@ export default function AddCourses() {
   const [courseId, setCourseId] = useState<number>(0);
   const [filledForm] = Form.useForm();
   const filledDetailsForm = filledForm.getFieldsValue(true)
+
   console.log("filled details form?", filledDetailsForm)
 
   const step = [

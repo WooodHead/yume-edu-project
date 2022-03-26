@@ -140,3 +140,27 @@ export function getCourseByCourseDetails(path:string) {
     .then((res) => res.data)
     .catch((err) => message.error("Get course detail failed"));
 }
+
+// Get overview data (course, student, teacher) 
+export function getOverview(){
+  const path ="statistics/overview";
+  return httpGet(path, {})
+  .then((res) => res.data)
+  .catch((err) => message.error("Get overview failed"))
+}
+
+// Get student statistic data
+export function getStudentStatistic(){
+  const path ="statistics/student";
+  return httpGet(path, {})
+  .then((res) => res.data)
+  .catch((err) => message.error("Get student statistics failed"))
+}
+
+// Get course statistic data
+export function getCourseStatistic(){
+  const path ="statistics/course";
+  return httpGet(path, {})
+  .then((res) => res.data)
+  .catch((err) => message.error("Get course statistics failed"))
+}
