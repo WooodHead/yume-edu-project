@@ -202,7 +202,7 @@ export default function ManagerHomePage() {
                   );
 
                 case "gender":
-                  return <PieChart gender={gender} title="Gender" />;
+                  return <PieChart gender={gender}  title="Gender" />;
 
                 // default:
                 //   return <PieChart studentType={studentType} />;
