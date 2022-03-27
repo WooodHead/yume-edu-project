@@ -168,7 +168,7 @@ export default function ManagerHomePage() {
             }
           ></Card>
         </Col>
-
+        {/* Types */}
         <Col span="12">
           <Card
             title="Types"
@@ -202,7 +202,7 @@ export default function ManagerHomePage() {
                   );
 
                 case "gender":
-                  return <PieChart gender={gender}  title="Gender" />;
+                  return <PieChart gender={gender} title="Gender" />;
 
                 // default:
                 //   return <PieChart studentType={studentType} />;
@@ -210,6 +210,15 @@ export default function ManagerHomePage() {
             })()}
           </Card>
         </Col>
+      </Row>
+
+      <Row gutter={16} style={{ margin: "30px 0" }}>
+        {/* Increment */}
+        <Col span="12">
+          
+        </Col>
+        {/* Languages */}
+        <Col span="12"></Col>
       </Row>
     </ManagerLayout>
   );

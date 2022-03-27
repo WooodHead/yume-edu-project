@@ -14,7 +14,6 @@ export default function PieChart(props: {
   studentType?: StudentType[];
   courseType?: CourseType[];
   gender?: any;
-
   title?: string;
 }) {
   const { studentType, courseType, gender, title } = props;
@@ -37,7 +36,7 @@ export default function PieChart(props: {
     },
     subtitle: {
       text: ` ${title?.replace("Type", "Total")} : ${data[0]?.reduce(
-        (acc: number, cur:number) => acc + cur.amount,
+        (acc: number, cur: number) => acc + cur.amount,
         0
       )} `,
       align: "right",
@@ -85,7 +84,6 @@ export default function PieChart(props: {
     <HighchartsReact
       options={options}
       highcharts={Highcharts}
-      
     ></HighchartsReact>
   );
 }
