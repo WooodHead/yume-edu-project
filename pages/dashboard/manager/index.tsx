@@ -12,14 +12,18 @@ import {
   getCourseStatistic,
   getOverview,
   getStudentStatistic,
+  getTeacherStatistic,
 } from "../../api/api-service";
 import PieChart from "../../../components/manager/pie";
 import { StudentType } from "../../../lib/model/student";
 import { CourseType } from "../../../lib/model/course";
+import LineChart from "../../../components/manager/line";
+import BarChart from "../../../components/manager/bar";
+import HeatChart from "../../../components/manager/heat";
 
 const { Option } = Select;
 
-const StyledCard = styled(Row)`
+const StyledRow = styled(Row)`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -39,7 +43,9 @@ const StyledCard = styled(Row)`
     justify-content: center;
     font-size: 32px;
   }
-  .icon-layout {
+  .icon {
+    height: 82px;
+    display: flex;
     background: rgb(255, 255, 255);
     padding: 25px;
     border-radius: 50%;
@@ -62,16 +68,19 @@ interface Overview {
   icon: any;
 }
 
+export interface ITypes {
+  name: string;
+  amount: number;
+}
+
 export default function ManagerHomePage() {
   const [overview, setOverview] = useState<Overview[]>([]);
-  const [typeSelector, setTypeSelector] = useState("studentType");
-  const [studentType, setStudentType] = useState<StudentType[]>([]);
-  const [courseType, setCourseType] = useState<CourseType[]>([]);
-  const [gender, setGender] = useState({
-    student: {},
-    teacher: {},
-  });
-  console.log("gender statistics", gender);
+  const [types, setTypes] = useState<ITypes[]>([]);
+  const [increase, setIncrease] = useState<number[]>([]);
+  const [student, setStudent] = useState([]);
+  const [course, setCourse] = useState([]);
+  const [teacher, setTeacher] = useState([]);
+  console.log("course array,", increase);
 
   useEffect(() => {
     getOverview().then((res) => {
@@ -98,61 +107,91 @@ export default function ManagerHomePage() {
       setOverview(overview);
     });
 
-    // Get student statistics data
+    // student types
     getStudentStatistic().then((res) => {
-      setStudentType(res.type);
-      console.log("student statistic", res);
+      const types = [res.type];
+      setTypes(types);
+
+      // student increment
+      const student = new Array(12).fill(0);
+      res.createdAt.map((obj) => {
+        if (obj.name.substr(-2)) {
+          student.splice(
+            obj.name.substr(-2) - 1,
+            1,
+            student[obj.name.substr(-2) - 1] + obj.amount
+          );
+        }
+      });
+      setStudent(student);
+      console.log("student array", student);
     });
 
-    // Get course statistics data
+    // course increment
     getCourseStatistic().then((res) => {
-      setCourseType(res.type);
-      console.log("course statistic", res);
+      const course = new Array(12).fill(0);
+      res.createdAt.map((obj) => {
+        if (obj.name.substr(-2)) {
+          course.splice(
+            obj.name.substr(-2) - 1,
+            1,
+            course[obj.name.substr(-2) - 1] + obj.amount
+          );
+        }
+      });
+      setCourse(course);
     });
 
-    // Get gender
-    getOverview().then((res) => {
-      setGender({ student: res.student.gender, teacher: res.teacher.gender });
-      console.log("gender statistics", gender);
+    // teacher increment
+    getTeacherStatistic().then((res) => {
+      const teacher = new Array(12).fill(0);
+      res.createdAt.map((obj) => {
+        if (obj.name.substr(-2)) {
+          teacher.splice(
+            obj.name.substr(-2) - 1,
+            1,
+            teacher[obj.name.substr(-2) - 1] + obj.amount
+          );
+        }
+      });
+      setTeacher(teacher);
     });
   }, []);
 
   return (
     <ManagerLayout>
-      <Row gutter={16} style={{ margin: "30px 0" }}>
-        <StyledCard>
-          {overview.map(({ title, data, background, icon }, index) => {
-            const lastMonthAdded = +(
-              (data.lastMonthAdded / data.total) *
-              100
-            ).toFixed(1);
+      <StyledRow gutter={16} style={{ margin: "30px 0" }}>
+        {overview.map(({ title, data, background, icon }, index) => {
+          const lastMonthAdded = +(
+            (data.lastMonthAdded / data.total) *
+            100
+          ).toFixed(1);
 
-            return (
-              <Col key={index} span="8">
-                <Card style={{ backgroundColor: background }}>
-                  <Row>
-                    <Col span="6">
-                      <div className="icon-layout">{icon}</div>
-                    </Col>
-                    <Col span="18">
-                      <h3>TOTAL {title.toUpperCase()}</h3>
-                      <h2>{data.total}</h2>
-                      <Progress
-                        percent={100 - lastMonthAdded}
-                        size="small"
-                        showInfo={false}
-                        strokeColor="white"
-                        trailColor="lightgreen"
-                      />
-                      <p>{`${lastMonthAdded + "%"} Increase in 30 Days`}</p>
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-            );
-          })}
-        </StyledCard>
-      </Row>
+          return (
+            <Col key={index} span="8">
+              <Card style={{ backgroundColor: background }}>
+                <Row>
+                  <Col span="6">
+                    <div className="icon">{icon}</div>
+                  </Col>
+                  <Col span="18">
+                    <h3>TOTAL {title.toUpperCase()}</h3>
+                    <h2>{data.total}</h2>
+                    <Progress
+                      percent={100 - lastMonthAdded}
+                      size="small"
+                      showInfo={false}
+                      strokeColor="white"
+                      trailColor="lightgreen"
+                    />
+                    <p>{`${lastMonthAdded + "%"} Increase in 30 Days`}</p>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+          );
+        })}
+      </StyledRow>
 
       <Row gutter={16} style={{ margin: "30px 0" }}>
         {/* Map */}
@@ -168,6 +207,7 @@ export default function ManagerHomePage() {
             }
           ></Card>
         </Col>
+
         {/* Types */}
         <Col span="12">
           <Card
@@ -175,39 +215,54 @@ export default function ManagerHomePage() {
             style={{ padding: "24px" }}
             extra={
               <Select
-                defaultValue="studentType"
+                defaultValue="student"
                 bordered={false}
-                onSelect={(el: string) => {
-                  if (el) {
-                    setTypeSelector(el);
-                  }
+                onSelect={(value: string) => {
+                  value === "student"
+                    ? getStudentStatistic().then((res) => {
+                        const types: ITypes[] = [res.type];
+                        setTypes(types);
+                      })
+                    : value === "course"
+                    ? getCourseStatistic().then((res) => {
+                        const types = [res.type];
+                        setTypes(types);
+                        console.log(res);
+                      })
+                    : getOverview().then((res) => {
+                        const student = [
+                          { name: "female", amount: res.student.gender.female },
+                          { name: "male", amount: res.student.gender.male },
+                          {
+                            name: "unknown",
+                            amount: res.student.gender.unknown,
+                          },
+                        ];
+                        const teacher = [
+                          { name: "female", amount: res.teacher.gender.female },
+                          { name: "male", amount: res.teacher.gender.male },
+                          {
+                            name: "unknown",
+                            amount: res.teacher.gender.unknown,
+                          },
+                        ];
+                        const types: ITypes[][] = [student, teacher];
+
+                        setTypes(types);
+                      });
                 }}
               >
-                <Option value="studentType">Student Type</Option>
-                <Option value="courseType">Course Type</Option>
+                <Option value="student">Student Type</Option>
+                <Option value="course">Course Type</Option>
                 <Option value="gender">Gender</Option>
               </Select>
             }
           >
-            {(() => {
-              switch (typeSelector) {
-                case "studentType":
-                  return (
-                    <PieChart studentType={studentType} title="Student Type" />
-                  );
-
-                case "courseType":
-                  return (
-                    <PieChart courseType={courseType} title="Course Type" />
-                  );
-
-                case "gender":
-                  return <PieChart gender={gender} title="Gender" />;
-
-                // default:
-                //   return <PieChart studentType={studentType} />;
-              }
-            })()}
+          
+            {types?.map((obj: ITypes) => {
+              return <PieChart key={Math.random()} types={obj} />;
+            })}
+          
           </Card>
         </Col>
       </Row>
@@ -215,10 +270,26 @@ export default function ManagerHomePage() {
       <Row gutter={16} style={{ margin: "30px 0" }}>
         {/* Increment */}
         <Col span="12">
-          
+          <Card title="Increment" style={{ padding: "24px", width: "120%" }}>
+            <LineChart increase={{ student, course, teacher }} />
+          </Card>
         </Col>
+
         {/* Languages */}
-        <Col span="12"></Col>
+        <Col span="12">
+          <Card
+            title="Languages"
+            style={{ padding: "24px", width: "120%" }}
+          >
+            <BarChart />
+          </Card>
+        </Col>
+      </Row>
+
+      <Row gutter={16} style={{ margin: "30px 0" }}>
+            <Col span="24">
+              <HeatChart />
+            </Col>
       </Row>
     </ManagerLayout>
   );

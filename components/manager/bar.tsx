@@ -1,40 +1,25 @@
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
-export default function LineChart(props: { increase: any }) {
-  const { increase } = props;
-  console.log("set increase:", increase.teacher)
+export default function BarChart() {
+  
 
   const options: Highcharts.Options = {
     chart: {
-      type: "line",
+      type: "column",
     },
     title: {
-      text: "",
+      text: "Student VS Teacher",
     },
-
+    subtitle: {
+        text: "Comparing what students are interested in and teachers' skills",
+      },
     yAxis: {
       title: {
-        text: "Increment",
+        text: "Interested VS Skills",
       },
     },
 
-    xAxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
-    },
     legend: {
       layout: "horizontal",
       align: "center",
@@ -48,18 +33,7 @@ export default function LineChart(props: { increase: any }) {
       },
     },
     series: [
-        {
-            name: 'Student',
-            data: increase.student,
-        },
-        {
-            name: 'Course',
-            data:  increase.course,
-        },
-        {
-            name: 'Teacher',
-            data:  increase.teacher,
-        },
+      
       
     ],
 

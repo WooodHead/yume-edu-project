@@ -1,45 +1,34 @@
-import { Col, Row } from "antd";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { CourseType } from "../../lib/model/course";
-import { StudentType } from "../../lib/model/student";
+import { ITypes } from "../../pages/dashboard/manager";
 
-export interface IGender {
-  female: number;
-  male: number;
-  unknown: number;
-}
+
 
 export default function PieChart(props: {
-  studentType?: StudentType[];
-  courseType?: CourseType[];
-  gender?: any;
+  types: ITypes[];
   title?: string;
 }) {
-  const { studentType, courseType, gender, title } = props;
-
-  const data = [studentType, courseType, gender].filter(
-    (obj) => obj !== undefined
-  );
-
-  console.log("data filtered:", data);
+  const { types, title } = props;
 
   const options: Highcharts.Options = {
     chart: {
-      plotBackgroundColor: null,
-      plotBorderWidth: null,
-      plotShadow: false,
       type: "pie",
+      height: (9 / 16 * 100) + '%' // 16:9 ratio
     },
     title: {
       text: title,
     },
-    subtitle: {
-      text: ` ${title?.replace("Type", "Total")} : ${data[0]?.reduce(
-        (acc: number, cur: number) => acc + cur.amount,
-        0
-      )} `,
-      align: "right",
+    // subtitle: {
+    //   text: ` ${title?.replace("Type", "Total")} : ${types?.reduce(
+    //     (acc: number, cur: number) => acc + cur.amount,
+    //     0
+    //   )} `,
+    //   align: "right",
+    // },
+    credits: {
+        position:{
+            align: "left"
+        }
     },
     tooltip: {
       pointFormat:
@@ -64,18 +53,10 @@ export default function PieChart(props: {
     series: [
       {
         type: "pie",
-        // data: [
-        //   { name: "female", y: data[0].student?.female },
-        //   { name: "male", y: data[0].student?.male },
-        //   { name: "unknown", y: data[0].student?.unknown },
-        // ],
-
-        data: data[0]?.map(({ name, amount }) => {
-          return {
-            name: name,
-            y: amount,
-          };
-        }),
+        data: types.map(({name, amount})=>{
+            return {name: name, y: amount}
+        })
+      
       },
     ],
   };
