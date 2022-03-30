@@ -164,3 +164,11 @@ export function getCourseStatistic(){
   .then((res) => res.data)
   .catch((err) => message.error("Get course statistics failed"))
 }
+
+// Get teacher statistic data
+export function getTeacherStatistic(){
+  const path ="statistics/teacher";
+  return httpGet(path, {})
+  .then((res) => res.data)
+  .catch((err) => message.error("Get teacher statistics failed"))
+}
